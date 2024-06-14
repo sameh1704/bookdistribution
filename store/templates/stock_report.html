@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <form id="report-form" method="post" action="{% url 'store:generate_report' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Generate Report</button>
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $('#id_stage').change(function () {
+          var stageId = $(this).val();
+          $.ajax({
+              url: '{% url "store:get_class_levels" %}',
+              data: {
+                  'stage_id': stageId
+              },
+              dataType: 'json',
+              success: function (data) {
+                  var classLevelSelect = $('#id_class_level');
+                  classLevelSelect.empty();
+                  $.each(data, function (index, item) {
+                      classLevelSelect.append($('<option>', {
+                          value: item.id,
+                          text: item.name
+                      }));
+                  });
+              }
+          });
+      });
+  });
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mt-4">إضافة تفاصيل توريد البوكليت</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="id_booklet_type">نوع البوكليت:</label>
+            {{ form.booklet_type|add_class:"form-control" }}
+        </div>
+        <div class="form-group">
+            <label for="id_quantity">الكمية المستلمة:</label>
+            {{ form.quantity|add_class:"form-control" }}
+        </div>
+        <div class="form-group">
+            <label for="id_received_date">تاريخ التوريد:</label>
+            {{ form.received_date|add_class:"form-control" }}
+        </div>
+        <button type="submit" class="btn btn-primary">إضافة</button>
+    </form>
+</div>
+{% endblock %}

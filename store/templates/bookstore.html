@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<section class="ul-widget-stat-s1">
+    <div class="row">
+
+        <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="card card-icon-bg card-icon-bg-primary o-hidden mb-4">
+                <div class="card-body text-center">
+                    <i class="i-Data-Upload"></i>
+                    <div class="content">
+                        <a href="{% url 'store:add_book' %}" class="d-block">
+                            <p class="text-muted mt-2 mb-0 link-text">وارد  الكتب</p>
+                            <img src="{% static 'dist-assets/images/products/s71.png' %}" alt="وارد  الكتب" class="icon-img">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="card card-icon-bg card-icon-bg-primary o-hidden mb-4">
+                <div class="card-body text-center">
+                    <i class="i-Car-Items"></i>
+                    <div class="content">
+                        <a href="{% url 'store:add_book_delivery' %}" class="d-block">
+                            <p class="text-muted mt-2 mb-0 link-text">   اضافة توريد الكتب </p>
+                            <img src="{% static 'dist-assets/images/products/s94.png' %}" alt="قائمة الطلاب" class="icon-img">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="card card-icon-bg card-icon-bg-primary o-hidden mb-4">
+                <div class="card-body text-center">
+                    <i class="i-Car-Items"></i>
+                    <div class="content">
+                        <a href="{% url 'store:book_list' %}" class="d-block">
+                            <p class="text-muted mt-2 mb-0 link-text">قائمة جرد الكتب</p>
+                            <img src="{% static 'dist-assets/images/products/s94.png' %}" alt="قائمة الطلاب" class="icon-img">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="card card-icon-bg card-icon-bg-primary o-hidden mb-4">
+            <div class="card-body text-center">
+                <i class="i-Data-Upload"></i>
+                <div class="content">
+                    <a href="{% url 'store:home' %}" class="d-block">
+                        <p class="text-muted mt-2 mb-0 link-text"> الرئيسية  </p>
+                        <img src="{% static 'dist-assets/images/products/s44.png' %}" alt="إضافة  الطلاب" class="icon-img">
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

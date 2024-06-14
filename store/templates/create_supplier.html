@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>إنشاء مورد جديد</title>
+</head>
+<body>
+    <h1>إنشاء مورد جديد</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">حفظ</button>
+    </form>
+</body>
+</html>
+{% endblock %}

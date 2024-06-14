@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid">
+    <h4 class="card-title mb-3 text-center">{{ title }}</h4>
+    <form method="get" style="margin-bottom: 20px;">
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                <label for="id_name">اسم المورد:</label>
+                {{ filter.form.name }}
+            </div>
+            <div class="form-group col-md-4">
+                <label for="id_phone">رقم التليفون:</label>
+                {{ filter.form.phone }}
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">تصفية</button>
+    </form>
+    
+    
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">اسم المورد</th>
+                    <th scope="col">رقم التليفون</th>
+                    <th scope="col">الكتب الدراسية</th>
+                    <th scope="col">البوكليتات المدرسية</th>
+                    <th scope="col">أنواع الكراسات</th>
+                    <th scope="col">الإجراءات</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for supplier in filter.qs %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ supplier.name }}</td>
+                        <td>{{ supplier.phone }}</td>
+                        <td>
+                            <ul>
+                                {% for book in supplier.book_set.all %}
+                                    <li>{{ book.title }} - العدد {{ book.received_quantity }}تاريخ {{ book.received_date }}</li>
+                                {% empty %}
+                                    <li>لا توجد كتب دراسية.</li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                        <td>
+                            <ul>
+                                {% for booklet in supplier.schoolbooklet_set.all %}
+                                    <li>{{ booklet.title }} - العدد {{ booklet.quantity }}تاريخ {{ booklet.received_date }}</li>
+                                {% empty %}
+                                    <li>لا توجد بوكليتات مدرسية.</li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                        <td>
+                            <ul>
+                                {% for notebook in supplier.notebooktype_set.all %}
+                                    <li>{{ notebook.name }}- العدد {{ notebook.in_quantity }} تاريخ {{ notebook.received_date }}</li>
+                                {% empty %}
+                                    <li>لا توجد أنواع كراسات.</li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                        <td>
+                            <a href="{% url 'store:edit_supplier' supplier.pk %}" class="btn btn-warning btn-sm">تعديل</a>
+                            <a href="{% url 'store:delete_supplier' supplier.pk %}" class="btn btn-danger btn-sm">حذف</a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="7">لا توجد نتائج.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="pagination d-flex justify-content-center">
+        <span class="step-links">
+            {% if filter.qs.has_previous %}
+                <a href="?page=1">&laquo; الأولى</a>
+                <a href="?page={{ filter.qs.previous_page_number }}">السابقة</a>
+            {% endif %}
+            <span class="current">صفحة {{ filter.qs.number }} من {{ filter.qs.paginator.num_pages }}.</span>
+            {% if filter.qs.has_next %}
+                <a href="?page={{ filter.qs.next_page_number }}">التالية</a>
+                <a href="?page={{ filter.qs.paginator.num_pages }}">الأخيرة &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+    <a href="{% url 'store:export_supplier_excel' %}?{{ request.GET.urlencode }}" class="btn btn-success">تصدير إلى Excel</a>
+</div>
+{% endblock %}

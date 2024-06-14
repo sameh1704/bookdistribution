@@ -1,0 +1,336 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'styles.css' %}">
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #F6F8FA;
+        margin: 0;
+        padding: 20px;
+    }
+
+    .container {
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #FFF;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+        text-align: center;
+        color: #333;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 10px;
+        font-weight: bold;
+    }
+
+    input[type="text"],
+    input[type="date"],
+    select {
+        width: calc(100% - 22px);
+        padding: 10px;
+        border: 1px solid #DDD;
+        border-radius: 5px;
+        margin-bottom: 20px;
+    }
+
+    ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    li {
+        cursor: pointer;
+        padding: 5px;
+        background-color: #EEE;
+        border-radius: 5px;
+        margin-bottom: 5px;
+    }
+
+    .btn {
+        display: block;
+        width: calc(50% - 22px);
+        padding: 10px;
+        background-color: #4CAF50;
+        border: none;
+        color: #FFF;
+        font-size: 16px;
+        font-weight: bold;
+        text-align: center;
+        cursor: pointer;
+        border-radius: 5px;
+        margin-center: 20px;
+    }
+</style>
+<form method="post" id="book_distribution_form">
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="id_search_student">ابحث عن الطالب</label>
+        {{ form.search_student }}
+    </div>
+    <div id="student_search_results"></div>
+    <div class="form-group">
+        <label for="id_student">الطالب</label>
+        {{ form.student }}
+    </div>
+    <div class="form-group">
+        <label for="id_stage">المرحلة الدراسية</label>
+        {{ form.stage }}
+    </div>
+    <div class="form-group">
+        <label for="id_class_level">الصف الدراسي</label>
+        {{ form.class_level }}
+    </div>
+    <div class="form-group">
+        <label for="id_section">الفصل الدراسي</label>
+        {{ form.section }}
+    </div>
+    <div class="form-group">
+        <label for="id_receipt_number">رقم ايصال الدفع:</label>
+        {{ form.receipt_number }}
+    </div>
+    <div class="form-group">
+        <label>الكتب:</label>
+        {{ form.books }}
+    </div>
+    <div class="form-group">
+        <label>الكراسات:</label>
+        {{ form.notebooks }}
+    </div>
+    <div class="form-group">
+        <label>البوكليتات:</label>
+        {{ form.booklets }}
+    </div>
+    <div class="form-group">
+        <label for="id_recipient_name">اسم المستلم:</label>
+        {{ form.recipient_name }}
+    </div>
+    <div class="form-group">
+        <label for="id_distribution_status">حالة التوزيع:</label>
+        {{ form.distribution_status }}
+    </div>
+    <div class="form-group">
+        <label for="id_delivery_date">تاريخ التوزيع:</label>
+        {{ form.delivery_date }}
+    </div>
+    <button type="submit" class="btn btn-primary">حفظ</button>
+    <button type="button" onclick="printPage()" class="btn btn-secondary">طباعة</button>
+</form>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    // البحث عن الطالب وعرض النتائج
+$('#id_search_student').on('input', function() {
+    var query = $(this).val();
+    if (query.length > 0) {
+        $.ajax({
+            type: 'GET',
+            url: '/search_student/',
+            data: {'query': query},
+            success: function(response) {
+                var studentResults = $('#student_search_results');
+                studentResults.empty();
+                var students = JSON.parse(response.students); // تحويل البيانات من JSON إلى كائن
+                if (students.length > 0) {
+                    var resultList = $('<ul>');
+                    students.forEach(function(student) { // استخدام forEach بدلاً من $.each
+                        resultList.append($('<li>').text(student.fields.name).attr('data-student-id', student.pk)); // استخراج الاسم من الكائن
+                    });
+                    studentResults.append(resultList);
+                } else {
+                    studentResults.text('لم يتم العثور على أي نتائج.');
+                }
+            }
+        });
+    }
+});
+
+    // تحميل معلومات الطالب بعد النقر على النتائج
+    $(document).on('click', '#student_search_results li', function() {
+        var studentId = $(this).attr("data-student-id");
+        var studentName = $(this).text(); 
+        $("#id_student").empty().append("<option value='" + studentId + "'>" + studentName + "</option>");
+        $.ajax({
+            type: 'GET',
+            url: '/get_student_info/',
+            data: {'student_id': studentId},
+            success: function(response) {
+                // تحديث حقول النموذج بناءً على البيانات المسترجعة
+                $('#id_stage option').filter(function() {
+                    return this.text === response.stage;
+                }).prop('selected', true);
+                
+                $('#id_class_level option').filter(function() {
+                    return $(this).text() === response.class_level;
+                }).prop('selected', true);
+                $('#id_section').val(response.section);
+
+                // تحميل الكتب والكراسات والبوكليتات بعد تحديد الطالب
+                loadAvailableMaterials(studentId);
+            }
+        });
+    });
+
+    // تحميل الكتب والكراسات والبوكليتات بعد تغيير الطالب المحدد
+    $('#id_student').change(function() {
+        var studentId = $(this).val();
+        if (studentId) {
+            loadAvailableMaterials(studentId);
+        }
+    });
+
+    // تحميل الكتب والكراسات والبوكليتات بعد تحديد الطالب
+    function loadAvailableMaterials(studentId) {
+        // Load books after selecting student
+        $.getJSON("{% url 'store:get_available_books' %}", {student_id: studentId}, function(data) {
+            $("#id_books").empty();
+            $.each(data.books, function(index, book) {
+                $("#id_books").append("<option value='" + book.id + "'>" + book.title + "</option>");
+            });
+            selectAvailableMaterials("#id_books"); // تحديد الكتب المتاحة تلقائيًا
+        });
+
+        // Load notebooks after selecting student
+
+        $.getJSON("{% url 'store:get_available_notebooks' %}", {student_id: studentId}, function(data) {
+            $("#id_notebooks").empty();
+        $.each(data.notebooks, function(index, notebook) {
+                $("#id_notebooks").append("<option value='" + notebook.id + "'>" + notebook.name + " - الكمية : " + notebook.quantity_assignment + "</option>");
+        });
+        selectAvailableMaterials("#id_notebooks"); // تحديد الكراسات المتاحة تلقائيًا
+    });
+
+
+        // Load booklets after selecting student
+        $.getJSON("{% url 'store:get_available_booklets' %}", {student_id: studentId}, function(data) {
+            $("#id_booklets").empty();
+            $.each(data.booklets, function(index, booklet) {
+                $("#id_booklets").append("<option value='" + booklet.id + "'>" + booklet.title + "</option>");
+            });
+            selectAvailableMaterials("#id_booklets"); // تحديد البوكليتات المتاحة تلقائيًا
+        });
+    }
+
+    // وظيفة لتحديد جميع الخيارات المتاحة في القائمة المنسدلة
+    function selectAvailableMaterials(selectId) {
+        $(selectId + " option").prop("selected", true);
+    }
+
+    // إضافة وظيفة لزر "حفظ" لإرسال البيانات إلى الخادم
+    $('#book_distribution_form').on('submit', function(event) {
+        event.preventDefault(); // منع الإرسال الافتراضي للنموذج
+
+        // جمع البيانات من النموذج
+        var formData = new FormData(this);
+
+        // إضافة قيم الكتب والكراسات والبوكليتات المحددة
+        var booksSelect = $('#id_books');
+        var notebooksSelect = $('#id_notebooks');
+        var bookletsSelect = $('#id_booklets');
+
+        $.each(booksSelect.val(), function(index, bookId) {
+            formData.append('books', bookId);
+        });
+
+        $.each(notebooksSelect.val(), function(index, notebookId) {
+            formData.append('notebooks', notebookId);
+        });
+
+        $.each(bookletsSelect.val(), function(index, bookletId) {
+            formData.append('booklets', bookletId);
+        });
+
+        // إرسال البيانات إلى الخادم باستخدام AJAX
+        $.ajax({
+            type: 'POST',
+            url: '{% url "store:book_distribution" %}',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                alert('تم حفظ البيانات بنجاح.');
+                // يمكنك إجراء أي عمليات إضافية بعد حفظ البيانات هنا
+                // طباعة الإيصال
+                printPage();
+
+                // تأخير التحويل بعد الطباعة لضمان أن يتم الطباعة أولا
+                setTimeout(function() {
+                    // تحويل المستخدم إلى صفحة النجاح بعد الحفظ
+                    window.location.href = '{% url "store:home" %}'; // استبدل برابط صفحة النجاح الخاصة بك
+                }, 1000); // تأخير 1 ثانية (1000 ميلي ثانية) للسماح بالطباعة قبل التحويل
+            },
+            error: function(xhr, status, error) {
+                console.log('Error:', error);
+                console.log('Status:', status);
+                console.log('Response:', xhr.responseText);
+                alert('حدث خطأ أثناء حفظ البيانات.');
+            }
+        });
+    });
+
+
+    // وظيفة للطباعة
+    function printPage() {
+        // جمع البيانات من النموذج قبل الطباعة
+        var studentName = $('#id_student option:selected').text();
+        var classLevel = $('#id_class_level option:selected').text();
+        var receiptNumber = $('#id_receipt_number').val();
+        var recipientName = $('#id_recipient_name').val();
+        var distributionStatus = $('#id_distribution_status option:selected').text();
+        var deliveryDate = $('#id_delivery_date').val();
+
+        // جمع أسماء الكتب المحددة
+        var selectedBooks = [];
+        $('#id_books option:selected').each(function() {
+            selectedBooks.push($(this).text());
+        });
+
+        // جمع أسماء الكراسات المحددة
+        var selectedNotebooks = [];
+        $('#id_notebooks option:selected').each(function() {
+            selectedNotebooks.push($(this).text());
+        });
+
+        // جمع أسماء البوكليتات المحددة
+        var selectedBooklets = [];
+        $('#id_booklets option:selected').each(function() {
+            selectedBooklets.push($(this).text());
+        });
+
+        // إنشاء النص للطباعة
+        var printContent = '<h1 style="text-align: center;">مدارس المنار الخاصة للغات</h1>'; // العنوان الرئيسي الجديد
+        printContent += '<h2 style="text-align: center;">بيانات الاستلام</h2>';
+        printContent += '<p>اسم الطالب: ' + studentName + '</p>';
+        printContent += '<p>الصف الدراسي: ' + classLevel + '</p>';
+        printContent += '<p>رقم إيصال الدفع: ' + receiptNumber + '</p>';
+        printContent += '<p>الكتب: ' + selectedBooks.join(', ') + '</p>'; // إدراج أسماء الكتب
+        printContent += '<p>الكراسات: ' + selectedNotebooks.join(', ') + '</p>'; // إدراج أسماء الكراسات
+        printContent += '<p>البوكليتات: ' + selectedBooklets.join(', ') + '</p>'; // إدراج أسماء البوكليتات
+        printContent += '<p>اسم المستلم: ' + recipientName + '</p>';
+        printContent += '<p>حالة التوزيع: ' + distributionStatus + '</p>';
+        printContent += '<p>تاريخ التوزيع: ' + deliveryDate + '</p>';
+
+        // إنشاء نافذة جديدة للطباعة وإدراج البيانات
+        var printWindow = window.open('', '_blank');
+        printWindow.document.open();
+        printWindow.document.write('<html><head><title>طباعة بيانات التوزيع</title></head><body style="font-size: 18px;">');
+        printWindow.document.write(printContent);
+        printWindow.document.write('</body></html>');
+        printWindow.document.close();
+
+        // طباعة الصفحة
+        printWindow.print();
+    }
+
+
+</script>
+
+{% endblock %}

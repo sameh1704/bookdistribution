@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mb-3">إضافة كتاب جديد</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">إضافة كتاب</button>
+    </form>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function () {
+    $('#id_stage').change(function () {
+        var stageId = $(this).val();
+        $.ajax({
+            url: '{% url "store:get_class_levels" %}',
+            data: {
+                'stage_id': stageId
+            },
+            dataType: 'json',
+            success: function (data) {
+                var classLevelSelect = $('#id_class_level');
+                classLevelSelect.empty();
+                $.each(data, function (index, item) {
+                    classLevelSelect.append($('<option>', {
+                        value: item.id,
+                        text: item.name
+                    }));
+                });
+            }
+        });
+    });
+});
+</script>
+{% endblock %}
+
+

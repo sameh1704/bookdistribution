@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بحث عن الطالب</title>
+</head>
+<body>
+    <h1>بحث عن الطالب</h1>
+    <form id="searchForm">
+        <input type="text" id="searchInput" placeholder="اسم الطالب">
+        <select id="studentsList"></select>
+    </form>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $('#searchInput').on('input', function(){
+                var query = $(this).val();
+                $.get('{% url 'store:search_student' %}', { query: query }, function(data) {
+                    $('#studentsList').empty();
+                    data.students.forEach(function(student) {
+                        $('#studentsList').append('<option value="' + student.id + '">' + student.name + '</option>');
+                    });
+                });
+            });
+            
+            $('#studentsList').change(function() {
+                var studentId = $(this).val();
+                $.get('{% url 'store:get_selected_student' %}', { student_id: studentId }, function(data) {
+                    // تعبئة بيانات الطالب في الحقول المناسبة
+                    // يمكنك استخدام jQuery لتعبئة الحقول أو استخدام البيانات كمدخلات لتعبئة نموذج آخر
+                    // مثال: $('#stageInput').val(data.stage);
+                    // مثال آخر: إنشاء نموذج جديد ببيانات الطالب وإرساله إلى صفحة النموذج الرئيسية
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+{% endblock %}

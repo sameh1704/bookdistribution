@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+
+<section class="ul-widget-stat-s1">
+    <div class="row">
+        <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="card card-icon-bg card-icon-bg-primary o-hidden mb-4">
+                <div class="card-body text-center">
+                    <i class="i-Car-Items"></i>
+                    <div class="content">
+                        <a href="{% url 'store:add_notebook_type' %}" class="d-block">
+                            <p class="text-muted mt-2 mb-0 link-text"> وارد الكراسات</p>
+                            <img src="{% static 'dist-assets/images/products/s6.png' %}" alt="وارد الكراسات " class="icon-img">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="card card-icon-bg card-icon-bg-primary o-hidden mb-4">
+                <div class="card-body text-center">
+                    <i class="i-Data-Upload"></i>
+                    <div class="content">
+                        <a href="{% url 'store:add_notebook_delivery' %}" class="d-block">
+                            <p class="text-muted mt-2 mb-0 link-text"> اضافة رصيد كراسات   </p>
+                            <img src="{% static 'dist-assets/images/products/s33.png' %}" alt="وارد  الكتب" class="icon-img">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="card card-icon-bg card-icon-bg-primary o-hidden mb-4">
+                <div class="card-body text-center">
+                    <i class="i-Data-Upload"></i>
+                    <div class="content">
+                        <a href="{% url 'store:add_notebook_assignment' %}" class="d-block">
+                            <p class="text-muted mt-2 mb-0 link-text">تخصيص  الكراسات</p>
+                            <img src="{% static 'dist-assets/images/products/s1.png' %}" alt="تخصيص  الكراسات" class="icon-img">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="card card-icon-bg card-icon-bg-primary o-hidden mb-4">
+                <div class="card-body text-center">
+                    <i class="i-Data-Upload"></i>
+                    <div class="content">
+                        <a href="{% url 'store:notebooktype_list' %}" class="d-block">
+                            <p class="text-muted mt-2 mb-0 link-text">  قائمة جرد الكراسات</p>
+                            <img src="{% static 'dist-assets/images/products/s96.png' %}" alt="إضافة  الطلاب" class="icon-img">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="card card-icon-bg card-icon-bg-primary o-hidden mb-4">
+                <div class="card-body text-center">
+                    <i class="i-Data-Upload"></i>
+                    <div class="content">
+                        <a href="{% url 'store:notebook_assignment_list' %}" class="d-block">
+                            <p class="text-muted mt-2 mb-0 link-text">  قائمة تخصيص الكراسات</p>
+                            <img src="{% static 'dist-assets/images/products/s96.png' %}" alt="إضافة  الطلاب" class="icon-img">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="card card-icon-bg card-icon-bg-primary o-hidden mb-4">
+                <div class="card-body text-center">
+                    <i class="i-Data-Upload"></i>
+                    <div class="content">
+                        <a href="{% url 'store:home' %}" class="d-block">
+                            <p class="text-muted mt-2 mb-0 link-text"> الرئيسية  </p>
+                            <img src="{% static 'dist-assets/images/products/s44.png' %}" alt="إضافة  الطلاب" class="icon-img">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+  
+{% endblock %}

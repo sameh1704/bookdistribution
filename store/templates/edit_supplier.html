@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+
+{% block content %}
+<div class="container">
+    <h2>تعديل المورد: {{ supplier.name }}</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <button type="submit" class="btn btn-primary">حفظ التعديلات</button>
+        <a href="{% url 'store:supplier_list' %}" class="btn btn-secondary">إلغاء</a>
+    </form>
+</div>
+{% endblock %}

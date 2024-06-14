@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mt-4">تعديل البوكليت: {{ booklet.title }}</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="id_title">عنوان البوكليت:</label>
+            {{ form.title|add_class:"form-control" }}
+        </div>
+        <div class="form-group">
+            <label for="id_booklet_edition">إصدار البوكليت:</label>
+            {{ form.booklet_edition|add_class:"form-control" }}
+        </div>
+        <div class="form-group">
+            <label for="id_description">وصف البوكليت:</label>
+            {{ form.description|add_class:"form-control" }}
+        </div>
+        <div class="form-group">
+            <label for="id_source">مصدر التوريد:</label>
+            {{ form.source|add_class:"form-control" }}
+        </div>
+        <div class="form-group">
+            <label for="id_supplier">اسم المورد:</label>
+            {{ form.supplier|add_class:"form-control" }}
+        </div>
+        <div class="form-group">
+            <label for="id_stage">المرحلة الدراسية:</label>
+            {{ form.stage|add_class:"form-control" }}
+        </div>
+        <div class="form-group">
+            <label for="id_class_level">الصف الدراسي:</label>
+            {{ form.class_level|add_class:"form-control" }}
+        </div>
+        <div class="form-group">
+            <label for="id_quantity">الكمية:</label>
+            {{ form.quantity|add_class:"form-control" }}
+        </div>
+        <div class="form-group">
+            <label for="id_term">الترم الدراسي:</label>
+            {{ form.term|add_class:"form-control" }}
+        </div>
+        <button type="submit" class="btn btn-primary">تحديث</button>
+    </form>
+</div>
+{% endblock %}

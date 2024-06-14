@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="container-fluid">
+    <h2 class="mt-4">تخصيصات الكراسات</h2>
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th>#</th>
+                    <th>المرحلة الدراسية</th>
+                    <th>الصف الدراسي</th>
+                    <th>الكراسة</th>
+                    <th>الكمية المخصصة</th>
+                    <th >الترم الدراسي</th>
+                    <th>السنة الدراسية</th>
+                    <th>تاريخ التخصيص</th>
+                    <th scope="col">إجراءات</th>
+                </tr>   
+            </thead>
+            <tbody>
+                {% for assignment in assignments %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ assignment.stage }}</td>
+                        <td>{{ assignment.grade }}</td>
+                        <td>{{ assignment.notebook.name }}</td>
+                        <td>{{ assignment.quantity_assignment }}</td>
+                        <td>{{ assignment.term }}</td>
+                        <td>{{ assignment.year }}</td>
+                        <td>{{ assignment.assigned_date }}</td>
+                        <td>
+                            <a href="{% url 'store:edit_notebook_assignment' assignment.pk %}" class="btn btn-sm btn-primary">تعديل</a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="7">لا توجد تخصيصات مسجلة.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="pagination d-flex justify-content-center">
+        <span class="step-links">
+            {% if page_obj.has_previous %}
+                <a href="?page=1">&laquo; الأولى</a>
+                <a href="?page={{ page_obj.previous_page_number }}">السابقة</a>
+            {% endif %}
+            <span class="current">
+                صفحة {{ page_obj.number }} من {{ page_obj.paginator.num_pages }}.
+            </span>
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}">التالية</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}">الأخيرة &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+</div>
+{% endblock %}

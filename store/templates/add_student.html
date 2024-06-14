@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'styles.css' %}">
+<div class="container">
+  <div class="row justify-content-center mt-5">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          <h2 class="text-center">إضافة طالب جديد</h2>
+        </div>
+        <div class="card-body">
+          <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary btn-block">إضافة</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row justify-content-center mt-5">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          <h2 class="text-center">استيراد طلاب من ملف Excel</h2>
+        </div>
+        <div class="card-body">
+          <form method="post" enctype="multipart/form-data" action="{% url 'store:import_students' %}">
+            {% csrf_token %}
+            <div class="form-group">
+              <label for="excel_file" class="col-form-label">اختر ملف Excel:</label>
+              <input type="file" class="form-control-file" id="excel_file" name="excel_file">
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">استيراد</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row justify-content-center mt-5">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          <h2 class="text-center">تصدير الطلاب إلى ملف Excel</h2>
+        </div>
+        <div class="card-body text-center">
+          <a href="{% url 'store:export_students' %}" class="btn btn-success">تصدير</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $(document).ready(function () {
+    $('#id_stage').change(function () {
+        var stageId = $(this).val();
+        $.ajax({
+            url: '{% url "store:get_class_student" %}',
+            data: {
+                'stage_id': stageId
+            },
+            dataType: 'json',
+            success: function (data) {
+                var classLevelSelect = $('#id_class_level');
+                classLevelSelect.empty();
+                var sectionSelect = $('#id_section');
+                sectionSelect.empty();
+                data.class_levels.forEach(function (class_level) {
+                    classLevelSelect.append($('<option>', {
+                        value: class_level.id,
+                        text: class_level.name
+                    }));
+                });
+                // Clear sections dropdown when changing stage
+                sectionSelect.empty();
+                // Trigger class level change event to load sections
+                classLevelSelect.trigger('change');
+            }
+        });
+    });
+
+    $('#id_class_level').change(function () {
+        var classLevelId = $(this).val();
+        $.ajax({
+            url: '{% url "store:get_class_student" %}',
+            data: {
+                'class_level_id': classLevelId
+            },
+            dataType: 'json',
+            success: function (data) {
+                var sectionSelect = $('#id_section');
+                sectionSelect.empty();
+                data.sections.forEach(function (section) {
+                    sectionSelect.append($('<option>', {
+                        value: section.id,
+                        text: section.name
+                    }));
+                });
+            }
+        });
+    });
+});
+</script>
+
+
+{% endblock %}
+

@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% block content %}
+
+<!-- migrate_students.html -->
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>ترحيل الطلاب</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5">ترحيل الطلاب</h1>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="id_stage">المرحلة الدراسية</label>
+                {{ form.stage }}
+            </div>
+            <div class="form-group">
+                <label for="id_class_level">الصف الدراسي</label>
+                {{ form.class_level }}
+            </div>
+            <div class="form-group">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">اسم الطالب</th>
+                                <th scope="col">المرحلة الدراسية</th>
+                                <th scope="col">الصف الدراسي</th>
+                                <th scope="col">الفصل الدراسي</th>
+                                <th scope="col">السنة الدراسية</th>
+                                <th scope="col">اختيار</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for student in form.students.field.queryset %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ student.name }}</td>
+                                    <td>{{ student.stage.stage }}</td>
+                                    <td>{{ student.class_level.name }}</td>
+                                    <td>{% if student.section %}{{ student.section.name }}{% else %}لا يوجد{% endif %}</td>
+                                    <td>{{ student.academic_year.year }}</td>
+                                    <td>
+                                        <input type="checkbox" name="students" value="{{ student.id }}" id="student_{{ student.id }}">
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">ترحيل</button>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const stageField = document.querySelector('#id_stage');
+            const classLevelField = document.querySelector('#id_class_level');
+            const form = stageField.closest('form');
+
+            stageField.addEventListener('change', function() {
+                classLevelField.selectedIndex = 0;
+                form.submit();
+            });
+
+            classLevelField.addEventListener('change', function() {
+                form.submit();
+            });
+        });
+    </script>
+</body>
+</html>
+
+{% endblock %}

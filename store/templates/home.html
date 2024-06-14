@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="ul-widget-stat-s1">
+    <div class="row">
+        <!-- First Card -->
+        <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
+            <div class="card card-icon-bg card-icon-bg-primary o-hidden">
+                <div class="card-body text-center">
+                    <i class="i-Car-Items"></i>
+                    <div class="content">
+                        <a href="{% url 'store:Dashboard' %}" class="d-block">
+                            <p class="text-muted mt-2 mb-0 link-text">الطلاب</p>
+                            <img src="{% static 'dist-assets/images/products/s41.png' %}" alt="قائمة الطلاب" class="icon-img">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Second Card -->
+        <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
+            <div class="card card-icon-bg card-icon-bg-primary o-hidden">
+                <div class="card-body text-center">
+                    <i class="i-Data-Upload"></i>
+                    <div class="content">
+                        <a href="{% url 'store:note' %}" class="d-block">
+                            <p class="text-muted mt-2 mb-0 link-text">وارد الكراسات</p>
+                            <img src="{% static 'dist-assets/images/products/s8.png' %}" alt="وارد الكراسات" class="icon-img">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Third Card -->
+        <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
+            <div class="card card-icon-bg card-icon-bg-primary o-hidden">
+                <div class="card-body text-center">
+                    <i class="i-Data-Upload"></i>
+                    <div class="content">
+                        <a href="{% url 'store:booklet' %}" class="d-block">
+                            <p class="text-muted mt-2 mb-0 link-text">وارد البوكليت</p>
+                            <img src="{% static 'dist-assets/images/products/s320.png' %}" alt="وارد البوكليت" class="icon-img">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fourth Card -->
+        <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
+            <div class="card card-icon-bg card-icon-bg-primary o-hidden">
+                <div class="card-body text-center">
+                    <i class="i-Data-Upload"></i>
+                    <div class="content">
+                        <a href="{% url 'store:bookstore' %}" class="d-block">
+                            <p class="text-muted mt-2 mb-0 link-text">وارد الكتب الدراسية</p>
+                            <img src="{% static 'dist-assets/images/products/s221.png' %}" alt="وارد الكتب الدراسية" class="icon-img">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fifth Card -->
+        <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
+            <div class="card card-icon-bg card-icon-bg-primary o-hidden">
+                <div class="card-body text-center">
+                    <i class="i-Data-Upload"></i>
+                    <div class="content">
+                        <a href="{% url 'store:book_distribution' %}" class="d-block">
+                            <p class="text-muted mt-2 mb-0 link-text">صرف الكتب</p>
+                            <img src="{% static 'dist-assets/images/products/s9.png' %}" alt="صرف الكتب" class="icon-img">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sixth Card -->
+        <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
+            <div class="card card-icon-bg card-icon-bg-primary o-hidden">
+                <div class="card-body text-center">
+                    <i class="i-Data-Upload"></i>
+                    <div class="content">
+                        <a href="{% url 'store:book_distribution_list' %}" class="d-block">
+                            <p class="text-muted mt-2 mb-0 link-text">قائمة التوزيع</p>
+                            <img src="{% static 'dist-assets/images/products/s10.png' %}" alt="قائمة التوزيع" class="icon-img">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
+            <div class="card card-icon-bg card-icon-bg-primary o-hidden">
+                <div class="card-body text-center">
+                    <i class="i-Data-Upload"></i>
+                    <div class="content">
+                        <a href="{% url 'store:search_students' %}" class="d-block">
+                            <p class="text-muted mt-2 mb-0 link-text"> استعلام حالات التسليم</p>
+                            <img src="{% static 'dist-assets/images/products/s10.png' %}" alt="قائمة التوزيع" class="icon-img">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
+            <div class="card card-icon-bg card-icon-bg-primary o-hidden">
+                <div class="card-body text-center">
+                    <i class="i-Data-Upload"></i>
+                    <div class="content">
+                        <a href="{% url 'store:depreciations' %}" class="d-block">
+                            <p class="text-muted mt-2 mb-0 link-text">   تسجيل الاهلاكات</p>
+                            <img src="{% static 'dist-assets/images/products/s10.png' %}" alt="قائمة التوزيع" class="icon-img">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Seventh Card -->
+        <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
+            <div class="card card-icon-bg card-icon-bg-primary o-hidden">
+                <div class="card-body text-center">
+                    <i class="i-Data-Upload"></i>
+                    <div class="content">
+                        <a href="{% url 'store:list' %}" class="d-block">
+                            <p class="text-muted mt-2 mb-0 link-text">الموردين والأدوات</p>
+                            <img src="{% static 'dist-assets/images/products/s65.png' %}" alt="الموردين والأدوات" class="icon-img">
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+ <!-- Seventh Card -->
+ <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
+    <div class="card card-icon-bg card-icon-bg-primary o-hidden">
+        <div class="card-body text-center">
+            <i class="i-Data-Upload"></i>
+            <div class="content">
+                <a href="{% url 'store:outlet' %}" class="d-block">
+                    <p class="text-muted mt-2 mb-0 link-text"> صرف خارجى</p>
+                    <img src="{% static 'dist-assets/images/products/s65.png' %}" alt="الموردين والأدوات" class="icon-img">
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+    </div>
+</section>
+{% endblock %}

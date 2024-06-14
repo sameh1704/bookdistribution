@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid">
+    <h4 class="card-title mb-3 text-center">تأكيد حذف توزيع الكتب والكراسات والبوكليتات</h4>
+    <p>هل أنت متأكد من رغبتك في حذف هذا التوزيع؟</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">نعم، قم بالحذف</button>
+        <a href="{% url 'store:book_distribution_list' %}" class="btn btn-secondary">إلغاء</a>
+    </form>
+</div>
+{% endblock %}

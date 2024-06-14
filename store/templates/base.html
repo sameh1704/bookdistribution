@@ -1,0 +1,222 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>مخازن الكتب بمدارس المنار</title>
+    <link href="https://fonts.googleapis.com/css?family=Nunito:300,400,400i,600,700,800,900" rel="stylesheet" />
+    <link href="{% static 'dist-assets/css/themes/lite-purple.min.css' %}" rel="stylesheet" />
+    <link href="{% static 'dist-assets/css/plugins/perfect-scrollbar.min.css' %}" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" media="screen" href="https://fontlibrary.org/face/droid-arabic-kufi" type="text/css"/>
+    <style>
+        /* أسلوب الصفحة */
+        body {
+            font-size: 16px;
+            font-weight: bold;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* رأس الصفحة */
+        .main-header {
+            background-color: #f2f2f2;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo img {
+            width: 100px;
+        }
+
+        .menu-toggle {
+            cursor: pointer;
+        }
+
+        .header-icon {
+            font-size: 24px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        /* عنصر القائمة المنسدلة للمستخدم */
+        .user-dropdown {
+            position: absolute;
+            left: 15px;
+            top: 15px;
+        }
+
+        .user img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .dropdown-menu {
+            min-width: 150px;
+        }
+
+        .dropdown-header {
+            font-weight: bold;
+            padding: 5px 15px;
+        }
+    </style>
+</head>
+<body class="text-left">
+
+<div class="app-admin-wrap layout-sidebar-large">
+    <div class="main-header">
+        <div class="logo">
+            <img src="{% static 'dist-assets/images/logo.png' %}" alt="">
+        </div>
+        <div class="menu-toggle">
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <div class="header-part-right">
+            <!-- Full screen toggle -->
+            <i class="i-Full-Screen header-icon d-none d-sm-inline-block" data-fullscreen></i>
+            <div style="margin: auto"></div>
+            
+            <!-- عنصر الإشعارات -->
+
+
+            <!-- عنصر القائمة المنسدلة للمستخدم -->
+            <div class="user-dropdown">
+                
+                <div class="user col align-self-end">
+                    <img src="{% static 'dist-assets/images/faces/s71.png' %}" id="userDropdown" alt=""
+                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+                        <div class="dropdown-header">
+                            <i class="i-Lock-User mr-1"></i> تسجيل الدخول 
+                        </div>
+                        <a class="dropdown-item" href="">تسجيل الدخول</a>
+                        <a class="dropdown-item" href="">تسجيل الخروج</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="side-content-wrap">
+        <div class="sidebar-left open rtl-ps-none" data-perfect-scrollbar="" data-suppress-scroll-x="true">
+            <ul class="navigation-left">
+                <li class="nav-item">
+                    <a class="nav-item-hold" href="{% url 'store:home' %}">
+                        <i class="nav-icon i-Bar-Chart"></i>
+                        <span class="nav-text">الرئيسية</span>
+                    </a>
+                    <div class="triangle"></div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-item-hold" href="{% url 'store:Dashboard' %}">
+                        <i class="nav-icon i-Add-User"></i>
+                        <span class="nav-text">الطلاب</span>
+                    </a>
+                    <div class="triangle"></div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-item-hold" href="{% url 'store:bookstore' %}">
+                        <i class="nav-icon i-Library"></i>
+                        <span class="nav-text">الكتب</span>
+                    </a>
+                    <div class="triangle"></div>
+         
+            </li>
+            <li class="nav-item">
+                <a class="nav-item-hold" href="{% url 'store:note' %}">
+                    <i class="nav-icon i-Library"></i>
+                    <span class="nav-text">الكراسات</span>
+                </a>
+                <div class="triangle"></div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-item-hold" href="{% url 'store:booklet' %}">
+                    <i class="nav-icon i-Library"></i>
+                    <span class="nav-text">البوكليت</span>
+                </a>
+                <div class="triangle"></div>
+            </li>
+                <li class="nav-item">
+                    <a class="nav-item-hold" href="{% url 'store:book_distribution' %}">
+                        <i class="nav-icon i-Computer-Secure"></i>
+                        <span class="nav-text">صرف الكتب</span>
+                    </a>
+                    <div class="triangle"></div>
+                </li>
+            </li>
+            <li class="nav-item">
+                <a class="nav-item-hold" href="{% url 'store:list' %}">
+                    <i class="nav-icon i-Computer-Secure"></i>
+                    <span class="nav-text"> الموردين </span>
+                </a>
+                <div class="triangle"></div>
+            </li>
+                <li class="nav-item">
+                   
+    </div>
+    </div>
+
+    <div class="main-content-wrap sidenav-open d-flex flex-column">
+        {% block content %}
+
+        {% endblock %}
+
+        <div class="flex-grow-1"></div>
+        <div class="app-footer">
+            <div class="footer-bottom border-top pt-3 d-flex flex-column flex-sm-row align-items-center">
+                <a class="btn btn-primary text-white btn-rounded"
+                   href="https://themeforest.net/item/gull-bootstrap-laravel-admin-dashboard-template/23101970"
+                   target="_blank"> المنار (مخزن الكتب)</a>
+                <span class="flex-grow-1"></span>
+                <div class="d-flex align-items-center">
+                    <img class="logo" src="{% static 'dist-assets/images/logo.png' %}" alt="">
+                    <div>
+                        <p class="m-0">&copy; مهندس سامح عبد الرحيم</p>
+                        <p class="m-0">جميع الحقوق محفوظة</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://unpkg.com/gijgo@1.9.13/js/gijgo.min.js" type="text/javascript"></script>
+<link href="https://unpkg.com/gijgo@1.9.13/css/gijgo.min.css" rel="stylesheet" type="text/css"/>
+<script>
+    $('#datepicker1').datepicker({
+        uiLibrary: 'bootstrap4'
+    });
+    $('#datepicker2').datepicker({
+        uiLibrary: 'bootstrap4'
+    });
+</script>
+<script src=src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="{% static 'dist-assets/js/plugins/jquery-3.3.1.min.js' %}"></script>
+<script src="{% static 'dist-assets/js/plugins/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'dist-assets/js/plugins/perfect-scrollbar.min.js' %}"></script>
+<script src="{% static 'dist-assets/js/scripts/script.min.js' %}"></script>
+<script src="{% static 'dist-assets/js/scripts/sidebar.large.script.min.js' %}"></script>
+<script src="{% static 'dist-assets/js/plugins/apexcharts.min.js' %}"></script>
+<script src="{% static 'dist-assets/js/plugins/echarts.min.js' %}"></script>
+<script src="{% static 'dist-assets/js/scripts/echart.options.min.js' %}"></script>
+<script src="{% static 'dist-assets/js/scripts/card.metrics.script.min.js' %}"></script>
+<script src="{% static 'dist-assets/js/scripts/widgets-statistics.min.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script src="{% static 'dist-assets/js/plugins/apexcharts.dataseries.js' %}"></script>
+<script src="{% static 'dist-assets/js/scripts/apexColumnChart.script.min.js' %}"></script>
+
+</body>
+</html>

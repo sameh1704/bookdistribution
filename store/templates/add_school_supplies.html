@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <h2>إضافة أدوات مدرسية</h2>
+    <form id="school_supplies_form" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">إضافة</button>
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+// اجراء AJAX لتحديث قائمة الصفوف عند تغيير المرحلة الدراسية
+$(document).ready(function () {
+    $('#id_stage').change(function () {
+        var stageId = $(this).val();
+        $.ajax({
+            url: '{% url "store:get_class_levels" %}',
+            data: {
+                'stage_id': stageId
+            },
+            dataType: 'json',
+            success: function (data) {
+                var classLevelSelect = $('#id_class_level');
+                classLevelSelect.empty();
+                $.each(data, function (index, item) {
+                    classLevelSelect.append($('<option>', {
+                        value: item.id,
+                        text: item.name
+                    }));
+                });
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

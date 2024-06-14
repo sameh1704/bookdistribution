@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="container-fluid">
+    <h4 class="card-title mb-3 text-center">استعلام عن توزيع الطلاب</h4>
+    <form method="post" style="margin-bottom: 20px;">
+        {% csrf_token %}
+        <div class="form-row">
+            <div class="form-group col-md-4">
+                <label for="id_stage">المرحلة الدراسية:</label>
+                {{ form.stage|add_class:"form-control" }}
+            </div>
+            <div class="form-group col-md-4">
+                <label for="id_class_level">الصف الدراسي:</label>
+                {{ form.class_level|add_class:"form-control" }}
+            </div>
+            <div class="form-group col-md-4">
+                <label for="id_distribution_status">حالة التوزيع:</label>
+                {{ form.distribution_status|add_class:"form-control" }}
+            </div>
+        </div>
+        <button type="submit" name="search" class="btn btn-primary">بحث</button>
+        <a href="?export=1" class="btn btn-success">تصدير إلى Excel</a>
+    </form>
+    
+    <div class="table-responsive">
+        <h2>نتائج البحث:</h2>
+        <table class="table table-bordered table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">اسم الطالب</th>
+                    <th scope="col">المرحلة </th>
+                    <th scope="col">الصف </th>
+                    <th scope="col">الفصل </th>
+                    <th scope="col">الكتب المسلمة</th>
+                    <th scope="col">الكتب غير المسلمة</th>
+                    <th scope="col">البوكليتات المسلمة</th>
+                    <th scope="col">البوكليتات غير المسلمة</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ student.name }}</td>
+                        <td>{{ student.stage }}</td>
+                        <td>{{ student.class_level.name }}</td>
+                        <td>
+                            {% if student.section %}
+                                {{ student.section.name }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        {% if student.delivered_books %}
+                            <td>{{ student.delivered_books }}</td>
+                            <td>{{ student.undelivered_books }}</td>
+                            <td>{{ student.delivered_booklets }}</td>
+                            <td>{{ student.undelivered_booklets }}</td>
+                        {% else %}
+                            <td colspan="4">-</td>
+                        {% endif %}
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="9">لا توجد نتائج.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="pagination d-flex justify-content-center">
+        <span class="step-links">
+            {% if students.has_previous %}
+                <a href="?page=1&stage={{ request.session.stage }}&class_level={{ request.session.class_level }}&distribution_status={{ request.session.distribution_status }}">&laquo; الأولى</a>
+                <a href="?page={{ students.previous_page_number }}&stage={{ request.session.stage }}&class_level={{ request.session.class_level }}&distribution_status={{ request.session.distribution_status }}">السابقة</a>
+            {% endif %}
+            <span class="current">صفحة {{ students.number }} من {{ students.paginator.num_pages }}.</span>
+            {% if students.has_next %}
+                <a href="?page={{ students.next_page_number }}&stage={{ request.session.stage }}&class_level={{ request.session.class_level }}&distribution_status={{ request.session.distribution_status }}">التالية</a>
+                <a href="?page={{ students.paginator.num_pages }}&stage={{ request.session.stage }}&class_level={{ request.session.class_level }}&distribution_status={{ request.session.distribution_status }}">الأخيرة &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+</div>
+{% endblock %}

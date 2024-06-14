@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid">
+    <h4 class="card-title mb-3 text-center">عرض قائمة الطلاب</h4>
+    <form method="get" style="margin-bottom: 20px;">
+        <div style="display: inline-block; margin-right: 20px;">
+            <label>اسم الطالب:</label>
+            {{ filter.form.name }}
+        </div>
+        <div style="display: inline-block; margin-right: 20px;">
+            <label>المرحلة الدراسية:</label>
+            {{ filter.form.stage }}
+        </div>
+        <div style="display: inline-block; margin-right: 20px;">
+            <label>الصف الدراسي:</label>
+            {{ filter.form.class_level }}
+        </div>
+        <div style="display: inline-block; margin-right: 20px;">
+            <label>الفصل الدراسي:</label>
+            {{ filter.form.section }}
+        </div>
+        <div style="display: inline-block; margin-right: 20px;">
+            <label>السنة الدراسية:</label>
+            {{ filter.form.academic_year }}
+        </div>
+        <div style="display: inline-block; margin-right: 20px;">
+            <label>الرقم القومي:</label>
+            {{ filter.form.national_id }}
+        </div>
+        <button type="submit" class="btn btn-primary" style="margin-right: 20px;">تصفية</button>
+    </form>
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">الاسم</th>
+                    <th scope="col">المرحلة الدراسية</th>
+                    <th scope="col">الصف الدراسي</th>
+                    <th scope="col">الفصل الدراسي</th>
+                    <th scope="col">الرقم القومي</th>
+                    <th scope="col">رقم التليفون</th>
+                    <th scope="col">السنة الدراسية</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in Student_list %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ student.name }}</td>
+                        <td>{{ student.stage.stage }}</td>
+                        <td>{{ student.class_level.name }}</td>
+                        <td>{{ student.section.name }}</td>
+                        <td>{{ student.national_id }}</td>
+                        <td>{{ student.phone_number }}</td>
+                        <td>{{ student.academic_year.year }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="pagination d-flex justify-content-center">
+        <span class="step-links">
+            {% if Student_list.has_previous %}
+                <a href="?page=1">&laquo; الأولى</a>
+                <a href="?page={{ Student_list.previous_page_number }}">السابقة</a>
+            {% endif %}
+            <span class="current">صفحة {{ Student_list.number }} من {{ Student_list.paginator.num_pages }}.</span>
+            {% if Student_list.has_next %}
+                <a href="?page={{ Student_list.next_page_number }}">التالية</a>
+                <a href="?page={{ Student_list.paginator.num_pages }}">الأخيرة &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+    <a href="{% url 'store:export_Student_excel' %}?{{ request.GET.urlencode }}" class="btn btn-success">تصدير إلى Excel</a>
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // عند تغيير المرحلة الدراسية
+        $('#id_stage').change(function () {
+            var stageId = $(this).val();
+            $.ajax({
+                url: '{% url "store:get_class_student" %}',
+                data: { 'stage_id': stageId },
+                dataType: 'json',
+                success: function (data) {
+                    fillDropdown($('#id_class_level'), data.class_levels);
+                    $('#id_class_level').trigger('change');
+                }
+            });
+        });
+
+        // عند تغيير الصف الدراسي
+        $('#id_class_level').change(function () {
+            var classLevelId = $(this).val();
+            $.ajax({
+                url: '{% url "store:get_class_student" %}',
+                data: { 'class_level_id': classLevelId },
+                dataType: 'json',
+                success: function (data) {
+                    fillDropdown($('#id_section'), data.sections);
+                }
+            });
+        });
+
+        // املأ القائمة المنسدلة بالبيانات
+        function fillDropdown($dropdown, items) {
+            $dropdown.empty();
+            $.each(items, function (index, item) {
+                $dropdown.append($('<option>', { value: item.id, text: item.name }));
+            });
+        }
+
+        // تشغيل الحدث التلقائي عند التحميل
+        $('#id_stage').trigger('change');
+    });
+</script>
+
+
+
+{% endblock %}

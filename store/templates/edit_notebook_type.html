@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mt-4">تعديل الكراسة: {{ notebook.name }}</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="id_name">نوع الكراسة:</label>
+            {{ form.name|add_class:"form-control" }}
+        </div>
+        <div class="form-group">
+            <label for="id_size">حجم الكراسة:</label>
+            {{ form.size|add_class:"form-control" }}
+        </div>
+        <div class="form-group">
+            <label for="id_description">وصف الكراسة:</label>
+            {{ form.description|add_class:"form-control" }}
+        </div>
+        <div class="form-group">
+            <label for="id_source">مصدر التوريد:</label>
+            {{ form.source|add_class:"form-control" }}
+        </div>
+        <div class="form-group">
+            <label for="id_supplier">اسم المورد:</label>
+            {{ form.supplier|add_class:"form-control" }}
+        </div>
+        <div class="form-group">
+            <label for="id_in_quantity">الكمية الواردة:</label>
+            {{ form.in_quantity|add_class:"form-control" }}
+        </div>
+        <div class="form-group">
+            <label for="id_term">الترم الدراسي:</label>
+            {{ form.term|add_class:"form-control" }}
+        </div>
+        <button type="submit" class="btn btn-primary">تحديث</button>
+    </form>
+</div>
+{% endblock %}

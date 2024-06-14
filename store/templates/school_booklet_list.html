@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block extra_js %}
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.min.js"></script>
+  <script>
+    $(function() {
+      $("#id_received_date__gte").datepicker({
+        dateFormat: "yy-mm-dd"
+      });
+      $("#id_received_date__lte").datepicker({
+        dateFormat: "yy-mm-dd"
+      });
+    });
+  </script>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <h4 class="card-title mb-3 text-center">{{ title }}</h4>
+  <form method="get" style="margin-bottom: 20px;">
+    <div class="form-row">
+      <div class="form-group col-md-4">
+        <label for="id_title">عنوان البوكليت:</label>
+        {{ filter.form.title }}
+      </div>
+      <div class="form-group col-md-4">
+        <label for="id_source">مصدر التوريد:</label>
+        {{ filter.form.source }}
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-4">
+        <label for="id_supplier">المورد:</label>
+        {{ filter.form.supplier }}
+      </div>
+      <div class="form-group col-md-4">
+        <label for="id_stage">المرحلة الدراسية:</label>
+        {{ filter.form.stage }}
+      </div>
+      <div class="form-group col-md-4">
+        <label for="id_class_level">الصف الدراسي:</label>
+        {{ filter.form.class_level }}
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-4">
+        <label for="id_term">الترم الدراسي:</label>
+        {{ filter.form.term }}
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-4">
+        <label for="id_received_date__gte">تاريخ الاستلام من:</label>
+        {{ filter.form.received_date__gte }}
+      </div>
+      <div class="form-group col-md-4">
+        <label for="id_received_date__lte">تاريخ الاستلام إلى:</label>
+        {{ filter.form.received_date__lte }}
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary">تصفية</button>
+  </form>
+  <div class="table-responsive">
+    <table class="table table-bordered table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">عنوان البوكليت</th>
+                <th scope="col">إصدار الكتاب</th>
+                <th scope="col">وصف البوكليت</th>
+                <th scope="col">مصدر التوريد</th>
+                <th scope="col">اسم المورد</th>
+                <th scope="col">المرحلة الدراسية</th>
+                <th scope="col">الصف الدراسي</th>
+                <th scope="col">الكمية الواردة</th>
+                <th scope="col">الكمية الحالية</th>
+                <th scope="col">الترم الدراسي</th>
+                <th scope="col">تاريخ الاستلام</th>
+                <th scope="col">إجراءات</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for booklet in filter.qs %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ booklet.title }}</td>
+                    <td>{{ booklet.booklet_edition }}</td>
+                    <td>{{ booklet.description }}</td>
+                    <td>{{ booklet.source }}</td>
+                    <td>{{ booklet.supplier.name|default_if_none:"غير متوفر" }}</td>
+                    <td>{{ booklet.stage }}</td>
+                    <td>{{ booklet.class_level }}</td>
+                    <td>{{ booklet.quantity }}</td>
+                    <td>{{ booklet.live_quantity }}</td>
+                    <td>{{ booklet.term }}</td>
+                    <td>{{ booklet.received_date }}</td>
+                    <td>
+                        <a href="{% url 'store:edit_school_booklet' booklet.pk %}" class="btn btn-sm btn-primary">تعديل</a>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="13">لا توجد نتائج.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+  </div>
+  <div class="pagination d-flex justify-content-center">
+      <span class="step-links">
+          {% if page_obj.has_previous %}
+              <a href="?page=1">&laquo; الأولى</a>
+              <a href="?page={{ page_obj.previous_page_number }}">السابقة</a>
+          {% endif %}
+          <span class="current">صفحة {{ page_obj.number }} من {{ page_obj.paginator.num_pages }}.</span>
+          {% if page_obj.has_next %}
+              <a href="?page={{ page_obj.next_page_number }}">التالية</a>
+              <a href="?page={{ page_obj.paginator.num_pages }}">الأخيرة &raquo;</a>
+          {% endif %}
+      </span>
+  </div>
+  <h4 class="mt-5">تفاصيل التوريدات</h4>
+  <div class="table-responsive">
+    <table class="table table-bordered table-striped">
+        <thead class="thead-light">
+            <tr>
+                <th scope="col">نوع البوكليت</th>
+                <th scope="col">الكمية المستلمة</th>
+                <th scope="col">تاريخ التوريد</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for delivery in deliveries %}
+                <tr>
+                    <td>{{ delivery.booklet_type.title }}</td>
+                    <td>{{ delivery.quantity }}</td>
+                    <td>{{ delivery.received_date }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="3">لا توجد تسليمات مسجلة.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+  </div>
+  <a href="{% url 'store:export_school_booklet_excel' %}?{{ request.GET.urlencode }}" class="btn btn-success">تصدير إلى Excel</a>
+</div>
+{% endblock %}

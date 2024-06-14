@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+
+{% block content %}
+  <h2>قائمة إهلاك البوكليت</h2>
+  <div class="table-responsive">
+    <table class="table table-bordered table-striped">
+        <thead class="thead-dark">
+  
+      <tr>
+        <th>البوكليت</th>
+        <th>المرحلة الدراسية</th>
+        <th>الصف الدراسي</th>
+        <th>الكمية المستهلكة</th>
+        <th>سبب الإهلاك</th>
+        <th>تاريخ الإهلاك</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for depreciation in depreciations %}
+        <tr>
+          <td>{{ depreciation.booklet.title }}</td>
+          <td>{{ depreciation.booklet.stage}}</td>
+          <td>{{ depreciation.booklet.class_level.name }}</td>
+          <td>{{ depreciation.quantity }}</td>
+          <td>{{ depreciation.cause }}</td>
+          <td>{{ depreciation.date }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

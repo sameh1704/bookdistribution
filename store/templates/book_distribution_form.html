@@ -277,7 +277,6 @@ $('#id_search_student').on('input', function() {
     });
 
 
-    // وظيفة للطباعة
     function printPage() {
         // جمع البيانات من النموذج قبل الطباعة
         var studentName = $('#id_student option:selected').text();
@@ -286,50 +285,79 @@ $('#id_search_student').on('input', function() {
         var recipientName = $('#id_recipient_name').val();
         var distributionStatus = $('#id_distribution_status option:selected').text();
         var deliveryDate = $('#id_delivery_date').val();
-
+    
         // جمع أسماء الكتب المحددة
         var selectedBooks = [];
         $('#id_books option:selected').each(function() {
             selectedBooks.push($(this).text());
         });
-
+    
         // جمع أسماء الكراسات المحددة
         var selectedNotebooks = [];
         $('#id_notebooks option:selected').each(function() {
             selectedNotebooks.push($(this).text());
         });
-
+    
         // جمع أسماء البوكليتات المحددة
         var selectedBooklets = [];
         $('#id_booklets option:selected').each(function() {
             selectedBooklets.push($(this).text());
         });
-
+    
         // إنشاء النص للطباعة
-        var printContent = '<h1 style="text-align: center;">مدارس المنار الخاصة للغات</h1>'; // العنوان الرئيسي الجديد
-        printContent += '<h2 style="text-align: center;">بيانات الاستلام</h2>';
-        printContent += '<p>اسم الطالب: ' + studentName + '</p>';
-        printContent += '<p>الصف الدراسي: ' + classLevel + '</p>';
-        printContent += '<p>رقم إيصال الدفع: ' + receiptNumber + '</p>';
-        printContent += '<p>الكتب: ' + selectedBooks.join(', ') + '</p>'; // إدراج أسماء الكتب
-        printContent += '<p>الكراسات: ' + selectedNotebooks.join(', ') + '</p>'; // إدراج أسماء الكراسات
-        printContent += '<p>البوكليتات: ' + selectedBooklets.join(', ') + '</p>'; // إدراج أسماء البوكليتات
-        printContent += '<p>اسم المستلم: ' + recipientName + '</p>';
-        printContent += '<p>حالة التوزيع: ' + distributionStatus + '</p>';
-        printContent += '<p>تاريخ التوزيع: ' + deliveryDate + '</p>';
-
+        var printContent = '<div style="width: 80mm; font-size: 12px; line-height: 1.5; font-family: Arial, sans-serif;">';
+        printContent += '<h1 style="text-align: center; font-size: 16px; margin-bottom: 10px;">مدارس المنار الخاصة للغات</h1>';
+        printContent += '<h2 style="text-align: center; font-size: 14px; margin-bottom: 10px;">بيانات الاستلام</h2>';
+        printContent += '<p><strong>اسم الطالب:</strong> ' + studentName + '</p>';
+        printContent += '<p><strong>الصف الدراسي:</strong> ' + classLevel + '</p>';
+        printContent += '<p><strong>رقم إيصال الدفع:</strong> ' + receiptNumber + '</p>';
+        
+        // عرض الكتب
+        if (selectedBooks.length > 0) {
+            printContent += '<p><strong>الكتب:</strong></p>';
+            printContent += '<ul style="margin: 0; padding: 0 0 0 20px;">';
+            selectedBooks.forEach(function(book) {
+                printContent += '<li>' + book + '</li>';
+            });
+            printContent += '</ul>';
+        }
+        
+        // عرض الكراسات
+        if (selectedNotebooks.length > 0) {
+            printContent += '<p><strong>الكراسات:</strong></p>';
+            printContent += '<ul style="margin: 0; padding: 0 0 0 20px;">';
+            selectedNotebooks.forEach(function(notebook) {
+                printContent += '<li>' + notebook + '</li>';
+            });
+            printContent += '</ul>';
+        }
+        
+        // عرض البوكليتات
+        if (selectedBooklets.length > 0) {
+            printContent += '<p><strong>البوكليتات:</strong></p>';
+            printContent += '<ul style="margin: 0; padding: 0 0 0 20px;">';
+            selectedBooklets.forEach(function(booklet) {
+                printContent += '<li>' + booklet + '</li>';
+            });
+            printContent += '</ul>';
+        }
+        
+        printContent += '<p><strong>اسم المستلم:</strong> ' + recipientName + '</p>';
+        printContent += '<p><strong>حالة التوزيع:</strong> ' + distributionStatus + '</p>';
+        printContent += '<p><strong>تاريخ التوزيع:</strong> ' + deliveryDate + '</p>';
+        printContent += '</div>';
+    
         // إنشاء نافذة جديدة للطباعة وإدراج البيانات
         var printWindow = window.open('', '_blank');
         printWindow.document.open();
-        printWindow.document.write('<html><head><title>طباعة بيانات التوزيع</title></head><body style="font-size: 18px;">');
+        printWindow.document.write('<html><head><title>طباعة بيانات التوزيع</title></head><body>');
         printWindow.document.write(printContent);
         printWindow.document.write('</body></html>');
         printWindow.document.close();
-
+    
         // طباعة الصفحة
         printWindow.print();
     }
-
 
 </script>
 

@@ -10,17 +10,38 @@ from django.db.models.signals import post_save
 from django.db import transaction
 from django.db.models import UniqueConstraint
 from django.core.validators import MinValueValidator
-
+from django.db.models.signals import pre_save
 
 #######################################################################
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
+from datetime import date
+from django.db.models.signals import post_migrate
+
 class AcademicYear(models.Model):
     year = models.IntegerField(unique=True, verbose_name="السنة الدراسية")
     
     def __str__(self):
         return str(self.year)
+    
     class Meta:
         verbose_name = 'السنة'
-        verbose_name_plural = '  السنة الدراسية'
+        verbose_name_plural = 'السنة الدراسية'
+
+def create_academic_year():
+    current_date = date.today()
+    if current_date.month >= 7:  # إذا كنا في يوليو أو بعده
+        academic_year_start = current_date.year
+    else:  # إذا كنا قبل يوليو
+        academic_year_start = current_date.year 
+
+    # التأكد من عدم وجود نفس السنة الدراسية
+    if not AcademicYear.objects.filter(year=academic_year_start).exists():
+        AcademicYear.objects.create(year=academic_year_start)
+
+@receiver(post_migrate)
+def ensure_academic_year(sender, **kwargs):
+    create_academic_year()
 
 
 class Stage(models.Model):
@@ -485,9 +506,11 @@ class BookDistribution(models.Model):
             booklet.save()
 
         for notebook in self.notebooks.all():
-            assignment = NotebookAssignment.objects.get(notebook=notebook, grade=self.class_level, stage=self.stage)
-            notebook.live_quantity += assignment.quantity_assignment
-            notebook.save()
+            assignments = NotebookAssignment.objects.filter(notebook=notebook, grade=self.class_level, stage=self.stage)
+
+            for assignment in assignments:
+                notebook.live_quantity += assignment.quantity_assignment
+                notebook.save()
 
         super().delete(*args, **kwargs)
 
@@ -541,28 +564,35 @@ def update_notebooks_quantity(sender, instance, action, **kwargs):
         raise ValidationError("التوزيع غير مسموح به في هذه الفترة.")
 
     if action == 'post_add':
+        term_set = set([current_term, 'الترم الأول'])  # تعيين مجموعة الترمين
+
         for pk in kwargs['pk_set']:
-            notebook = NotebookType.objects.get(pk=pk)
             try:
-                assignment = NotebookAssignment.objects.get(notebook=notebook, grade=instance.class_level, stage=instance.stage, term=current_term)
-                if notebook.live_quantity >= assignment.quantity_assignment:
-                    notebook.live_quantity -= assignment.quantity_assignment
-                    notebook.save()
-                else:
-                    raise ValidationError(f"لا يوجد كمية كافية للكراسة {notebook.name}")
+                notebook = NotebookType.objects.get(pk=pk)
+                assignments = NotebookAssignment.objects.filter(notebook=notebook, grade=instance.class_level, stage=instance.stage, term__in=term_set)
+
+                for assignment in assignments:
+                    if notebook.live_quantity >= assignment.quantity_assignment:
+                        notebook.live_quantity -= assignment.quantity_assignment
+                        notebook.save()
+                    else:
+                        raise ValidationError(f"لا يوجد كمية كافية للكراسة {notebook.name} في الترم {assignment.term}")
             except NotebookAssignment.DoesNotExist:
-                raise ValidationError(f"لا يوجد تخصيص للكراسة {notebook.name} للترم الحالي.")
+                raise ValidationError(f"لا توجد تعيينات للكراسة {notebook.name} للترم الحالي.")
+
     elif action == 'post_remove':
+        term_set = set([current_term, 'الترم الأول'])  # تعيين مجموعة الترمين
+
         for pk in kwargs['pk_set']:
-            notebook = NotebookType.objects.get(pk=pk)
             try:
-                assignment = NotebookAssignment.objects.get(notebook=notebook, grade=instance.class_level, stage=instance.stage, term=current_term)
-                notebook.live_quantity += assignment.quantity_assignment
-                notebook.save()
+                notebook = NotebookType.objects.get(pk=pk)
+                assignments = NotebookAssignment.objects.filter(notebook=notebook, grade=instance.class_level, stage=instance.stage, term__in=term_set)
+
+                for assignment in assignments:
+                    notebook.live_quantity += assignment.quantity_assignment
+                    notebook.save()
             except NotebookAssignment.DoesNotExist:
-                raise ValidationError(f"لا يوجد تخصيص للكراسة {notebook.name} للترم الحالي.")
-
-
+                raise ValidationError(f"لا توجد تعيينات للكراسة {notebook.name} للترم الحالي.")
 #######################################################################################################################
 
 from django.db import models

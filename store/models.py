@@ -115,6 +115,17 @@ class Classroom(models.Model):
         verbose_name = 'ترقيم الفصول'
         verbose_name_plural = 'الفصل الدراسي'
 
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+@receiver(post_save, sender=ClassLevel)
+def create_classrooms_for_class_level(sender, instance, created, **kwargs):
+    if created:
+        stage = instance.stage
+        class_level = instance
+        classroom_names = [chr(i) for i in range(ord('A'), ord('J') + 1)]  # توليد أسماء الفصول من A إلى J
+        for name in classroom_names:
+            Classroom.objects.create(name=name, stage=stage, class_levels=class_level)
 
 ##########################################################################################################################
 
@@ -315,6 +326,7 @@ class SchoolBooklet(models.Model):
 class BookletDelivery(models.Model):
     booklet_type = models.ForeignKey(SchoolBooklet, on_delete=models.CASCADE, verbose_name=_('نوع البوكليت'))
     quantity = models.IntegerField(default=0, verbose_name=_('الكمية المستلمة'), validators=[MinValueValidator(0)])
+    supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE, blank=True, null=True, verbose_name='المورد')
     received_date = models.DateField(verbose_name=_('تاريخ التوريد'), auto_now_add=False)
 
     def __str__(self):
@@ -467,14 +479,19 @@ class BookDistribution(models.Model):
     recipient_name = models.CharField(max_length=100, verbose_name='اسم المستلم')
 
     def get_books_titles(self):
-        return ", ".join([book.title for book in self.books.all()])
+        return ", ".join([f"{book.title} ({book.term})" for book in self.books.all()])
 
     def get_notebooks_titles(self):
-        return ", ".join([notebook.name for notebook in self.notebooks.all()])
+        notebook_details = []
+        for notebook in self.notebooks.all():
+            assignments = NotebookAssignment.objects.filter(notebook=notebook, grade=self.class_level, stage=self.stage)
+            for assignment in assignments:
+                notebook_details.append(f"{notebook.name} - {assignment.term}: {assignment.quantity_assignment}")
+        return ", ".join(notebook_details)
     
     def get_booklets_titles(self):
-        return ", ".join([booklet.title for booklet in self.booklets.all()])
- 
+        return ", ".join([f"{booklet.title} ({booklet.term})" for booklet in self.booklets.all()])
+
 
     def get_undelivered_books_titles(self):
         delivered_books = self.books.all()
@@ -681,6 +698,8 @@ class NotebookDepreciation(models.Model):
 
 class BookOutstore(models.Model):
     name = models.CharField(max_length=100, verbose_name='اسم المستلم')
+    stage = models.ForeignKey(Stage, on_delete=models.CASCADE, verbose_name='المرحلة الدراسية')
+    class_level = models.ForeignKey(ClassLevel, on_delete=models.CASCADE, verbose_name='الصف الدراسي')
     book = models.ForeignKey(Book, on_delete=models.CASCADE, verbose_name='الكتاب')
     quantity = models.PositiveIntegerField(verbose_name='الكمية ', validators=[MinValueValidator(1)])
     date = models.DateField(auto_now_add=False, verbose_name='تاريخ الصرف')
@@ -702,6 +721,8 @@ class BookOutstore(models.Model):
 
 class BookletOutstore(models.Model):
     name = models.CharField(max_length=100, verbose_name='اسم المستلم')
+    stage = models.ForeignKey(Stage, on_delete=models.CASCADE, verbose_name='المرحلة الدراسية')
+    class_level = models.ForeignKey(ClassLevel, on_delete=models.CASCADE, verbose_name='الصف الدراسي')
     booklet = models.ForeignKey(SchoolBooklet, on_delete=models.CASCADE, verbose_name='البوكليت')
     quantity = models.PositiveIntegerField(verbose_name='الكمية ', validators=[MinValueValidator(1)])
     date = models.DateField(auto_now_add=False, verbose_name='تاريخ الصرف')

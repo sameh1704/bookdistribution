@@ -1297,6 +1297,11 @@ def migrate_students_view(request):
 from .forms import SearchForm
 import pandas as pd
 
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Stage, ClassLevel, Student, BookDistribution
+from .forms import SearchForm
+from django.core.paginator import Paginator
+
 def student_distribution_search(request):
     form = SearchForm(request.POST or None)
     students = []
@@ -1319,25 +1324,54 @@ def student_distribution_search(request):
         distribution_status = request.session.get('distribution_status')
 
         if stage_id and class_level_id and distribution_status:
-            stage = Stage.objects.get(id=stage_id)
-            class_level = ClassLevel.objects.get(id=class_level_id)
+            try:
+                stage = Stage.objects.get(id=stage_id)
+                class_level = ClassLevel.objects.get(id=class_level_id)
+            except Stage.DoesNotExist:
+                stage = None
+            except ClassLevel.DoesNotExist:
+                class_level = None
 
-            if distribution_status == 'جزئي':
-                partial_distributions = BookDistribution.objects.filter(stage=stage, class_level=class_level, distribution_status=BookDistribution.PARTIAL_DISTRIBUTION)
-                student_ids = partial_distributions.values_list('student', flat=True)
-                students = Student.objects.filter(id__in=student_ids)
+            if stage and class_level:
+                if distribution_status == 'جزئي':
+                    partial_distributions = BookDistribution.objects.filter(
+                        stage=stage, 
+                        class_level=class_level, 
+                        distribution_status=BookDistribution.PARTIAL_DISTRIBUTION
+                    )
+                    student_ids = partial_distributions.values_list('student', flat=True)
+                    students = Student.objects.filter(id__in=student_ids)
 
-                for student in students:
-                    distribution = partial_distributions.get(student=student)
-                    student.delivered_books = distribution.get_books_titles()
-                    student.undelivered_books = distribution.get_undelivered_books_titles()
-                    student.delivered_booklets = distribution.get_booklets_titles()
-                    student.undelivered_booklets = distribution.get_undelivered_booklets_titles()
-            elif distribution_status == 'غير مستلم':
-                distributed_students = BookDistribution.objects.filter(stage=stage, class_level=class_level).values_list('student', flat=True)
-                students = Student.objects.filter(stage=stage, class_level=class_level).exclude(id__in=distributed_students)
-            else:
-                students = Student.objects.filter(stage=stage, class_level=class_level)
+                    for student in students:
+                        distribution = partial_distributions.get(student=student)
+                        student.delivered_books = distribution.get_books_titles()
+                        student.undelivered_books = distribution.get_undelivered_books_titles()
+                        student.delivered_booklets = distribution.get_booklets_titles()
+                        student.undelivered_booklets = distribution.get_undelivered_booklets_titles()
+                elif distribution_status == 'غير مستلم':
+                    distributed_students = BookDistribution.objects.filter(
+                        stage=stage, 
+                        class_level=class_level
+                    ).values_list('student', flat=True)
+                    students = Student.objects.filter(
+                        stage=stage, 
+                        class_level=class_level
+                    ).exclude(id__in=distributed_students)
+                else:  # حالة 'جميع الحالات'
+                    students = Student.objects.filter(stage=stage, class_level=class_level)
+                    distributions = BookDistribution.objects.filter(stage=stage, class_level=class_level)
+                    for student in students:
+                        try:
+                            distribution = distributions.get(student=student)
+                            student.delivered_books = distribution.get_books_titles()
+                            student.undelivered_books = distribution.get_undelivered_books_titles()
+                            student.delivered_booklets = distribution.get_booklets_titles()
+                            student.undelivered_booklets = distribution.get_undelivered_booklets_titles()
+                        except BookDistribution.DoesNotExist:
+                            student.delivered_books = ""
+                            student.undelivered_books = ""
+                            student.delivered_booklets = ""
+                            student.undelivered_booklets = ""
 
     paginator = Paginator(students, 30)  # عدد العناصر في كل صفحة
     page_number = request.GET.get('page')
@@ -1347,6 +1381,7 @@ def student_distribution_search(request):
         return export_students_to_excel(students)
 
     return render(request, 'student_distribution_search.html', {'form': form, 'students': students_page})
+
 
 #############################################################################
 
@@ -1430,13 +1465,89 @@ class NotebooDepreciationListView(ListView):
 
 ###############################################################################################################################
 
+# views.py
+from django.http import JsonResponse
+from django.views.generic import CreateView
+from .models import BookOutstore, Book, Stage, ClassLevel
+from .forms import BookOutstoreForm
+
 class BookOutstoreCreateView(CreateView):
     model = BookOutstore
     form_class = BookOutstoreForm
     template_name = 'BookOutstore_form.html'
     success_url = reverse_lazy('store:outlet')
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['stages'] = Stage.objects.all()
+        context['class_levels'] = ClassLevel.objects.all()
+        return context
 
+def get_books(request):
+    if request.method == 'GET':
+        stage_id = request.GET.get('stage_id')
+        class_level_id = request.GET.get('class_level_id')
+
+        data = {}
+
+        if stage_id:
+            stage = Stage.objects.get(pk=stage_id)
+            class_levels = ClassLevel.objects.filter(stage=stage)
+            data['class_levels'] = [
+                {
+                    'id': class_level.id,
+                    'name': class_level.get_name_display()  # استخدم get_name_display() للحصول على القيمة المقابلة للاختيار
+                }
+                for class_level in class_levels
+            ]
+            # امسح بيانات الكتب عند تغيير المرحلة
+            data['books'] = []
+
+        if stage_id and class_level_id:
+            # الحصول على الترم الحالي
+            current_term = get_current_term()
+
+            if not current_term:
+                data['books'] = []  # لا يوجد توزيع في هذه الفترة
+            else:
+                # جلب الكتب المتاحة للترم الحالي
+                current_term_books = Book.objects.filter(
+                    stage_id=stage_id,
+                    class_level_id=class_level_id,
+                    term=current_term,
+                    available_quantity__gt=0
+                )
+
+                # إذا كان الترم الثاني، جلب الكتب التي لم يتم استلامها من الترم الأول
+                if current_term == 'الترم الثاني':
+                    previous_term_books = Book.objects.filter(
+                        stage_id=stage_id,
+                        class_level_id=class_level_id,
+                        term='الترم الأول',
+                        available_quantity__gt=0
+                    )
+                else:
+                    previous_term_books = Book.objects.none()
+
+                # جمع الكتب المتاحة للترم الحالي والكتب التي لم يتم استلامها من الترم السابق
+                combined_books = current_term_books | previous_term_books
+
+                data['books'] = [
+                    {
+                        'id': book.id,
+                        'title': book.title
+                    }
+                    for book in combined_books
+                ]
+
+        return JsonResponse(data)
+    return JsonResponse({})
+#########################################
+class BookOutstoreListView(ListView):
+    model = BookOutstore
+    form_class = BookOutstoreForm
+    template_name = 'BookOutstore_list.html'
+ 
 ###############################################################################################################################
 
 class BookletOutstoreCreateView(CreateView):
@@ -1444,3 +1555,51 @@ class BookletOutstoreCreateView(CreateView):
     form_class = BookletOutstoreForm
     template_name = 'BookletOutstore_form.html'
     success_url = reverse_lazy('store:outlet')
+def get_booklets(request):
+    if request.method == 'GET' and 'stage_id' in request.GET and 'class_level_id' in request.GET:
+        stage_id = request.GET.get('stage_id')
+        class_level_id = request.GET.get('class_level_id')
+
+        # الحصول على الترم الحالي
+        current_term = get_current_term()
+
+        if not current_term:
+            return JsonResponse({'booklets': []})  # لا يوجد توزيع في هذه الفترة
+
+        # جلب البوكليتات المتاحة للترم الحالي
+        current_term_booklets = SchoolBooklet.objects.filter(
+            stage_id=stage_id,
+            class_level_id=class_level_id,
+            term=current_term,
+            live_quantity__gt=0
+        )
+
+        # إذا كان الترم الثاني، جلب البوكليتات التي لم يتم استلامها من الترم الأول
+        if current_term == 'الترم الثاني':
+            previous_term_booklets = SchoolBooklet.objects.filter(
+                stage_id=stage_id,
+                class_level_id=class_level_id,
+                term='الترم الأول',
+                live_quantity__gt=0
+            )
+        else:
+            previous_term_booklets = SchoolBooklet.objects.none()
+
+        # جمع البوكليتات المتاحة للترم الحالي والبوكليتات التي لم يتم استلامها من الترم السابق
+        combined_booklets = current_term_booklets | previous_term_booklets
+
+        data = []
+        for booklet in combined_booklets:
+            booklet_data = {
+                'id': booklet.id,
+                'title': booklet.title
+            }
+            data.append(booklet_data)
+        return JsonResponse({'booklets': data})
+    return JsonResponse({})
+
+#########################################
+class BookletOutstoreListView(ListView):
+    model = BookletOutstore
+    form_class = BookletOutstoreForm
+    template_name = 'bookletoutlet_list.html'

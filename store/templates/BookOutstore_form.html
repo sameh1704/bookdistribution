@@ -2,10 +2,48 @@
 {% load static %}
 
 {% block content %}
+
 <h2> صرف كتاب</h2>
-<form method="post">
+<form method="post" id="book_outstore_form">
   {% csrf_token %}
   {{ form.as_p }}
   <button type="submit" class="btn btn-primary">إضافة</button>
 </form>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $(document).ready(function() {
+      // تحميل الصفوف بعد اختيار المرحلة
+      $("#id_stage").change(function() {
+          var stageId = $(this).val();
+          if (stageId) {
+              $.getJSON("{% url 'store:get_class_student' %}", {stage_id: stageId}, function(data) {
+                  $("#id_class_level").empty();
+                  $.each(data.class_levels, function(index, classLevel) {
+                      $("#id_class_level").append("<option value='" + classLevel.id + "'>" + classLevel.name + "</option>");
+                  });
+                  $("#id_class_level").trigger("change");
+              });
+          } else {
+              $("#id_class_level").empty();
+              $("#id_book").empty();
+          }
+      });
+
+      // تحميل الكتب بعد اختيار الصف
+      $("#id_class_level").change(function() {
+          var stageId = $("#id_stage").val();
+          var classLevelId = $(this).val();
+          if (stageId && classLevelId) {
+              $.getJSON("{% url 'store:get_books' %}", {stage_id: stageId, class_level_id: classLevelId}, function(data) {
+                  $("#id_book").empty();
+                  $.each(data.books, function(index, book) {
+                      $("#id_book").append("<option value='" + book.id + "'>" + book.title + "</option>");
+                  });
+              });
+          } else {
+              $("#id_book").empty();
+          }
+      });
+  });
+</script>
 {% endblock %}

@@ -2,69 +2,143 @@
 {% load static %}
 
 {% block content %}
-<section class="ul-widget-stat-s1">
-    <div class="row">
-
-        <!-- First Card -->
-        <div class="col-lg-3 col-md-6 col-sm-6">
-            <div class="card card-icon-bg card-icon-bg-primary o-hidden mb-4">
+<section class="ul-widget-stat-s1 booklet-management">
+    <div class="container-fluid">
+        <h2 class="section-title">إدارة البوكليت المدرسي</h2>
+        <div class="card-container">
+            <!-- First Card -->
+            <div class="card card-1">
                 <div class="card-body text-center">
-                    <i class="i-Data-Upload"></i>
                     <div class="content">
                         <a href="{% url 'store:add_school_booklet' %}" class="d-block">
-                            <p class="text-muted mt-2 mb-0 link-text">وارد البوكليت</p>
                             <img src="{% static 'dist-assets/images/products/s36.png' %}" alt="وارد البوكليت" class="icon-img">
+                            <h3 class="mt-4 mb-2">وارد البوكليت</h3>
+                            <p class="text-muted">إضافة بوكليت جديد للنظام</p>
                         </a>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Second Card -->
-        <div class="col-lg-3 col-md-6 col-sm-6">
-            <div class="card card-icon-bg card-icon-bg-primary o-hidden mb-4">
+            <!-- Second Card -->
+            <div class="card card-2">
                 <div class="card-body text-center">
-                    <i class="i-Data-Upload"></i>
                     <div class="content">
                         <a href="{% url 'store:add_booklet_delivery' %}" class="d-block">
-                            <p class="text-muted mt-2 mb-0 link-text"> اضافة رصيد بوكليت</p>
-                            <img src="{% static 'dist-assets/images/products/s121.png' %}" alt="وارد البوكليت" class="icon-img">
+                            <img src="{% static 'dist-assets/images/products/s121.png' %}" alt="اضافة رصيد بوكليت" class="icon-img">
+                            <h3 class="mt-4 mb-2">اضافة رصيد بوكليت</h3>
+                            <p class="text-muted">تسجيل كميات جديدة من البوكليت</p>
                         </a>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Third Card -->
-        <div class="col-lg-3 col-md-6 col-sm-6">
-            <div class="card card-icon-bg card-icon-bg-primary o-hidden mb-4">
+            <!-- Third Card -->
+            <div class="card card-3">
                 <div class="card-body text-center">
-                    <i class="i-Data-Upload"></i>
                     <div class="content">
                         <a href="{% url 'store:school_booklet_list' %}" class="d-block">
-                            <p class="text-muted mt-2 mb-0 link-text">قائمة جرد البوكليت</p>
                             <img src="{% static 'dist-assets/images/products/s95.png' %}" alt="قائمة جرد البوكليت" class="icon-img">
+                            <h3 class="mt-4 mb-2">قائمة جرد البوكليت</h3>
+                            <p class="text-muted">عرض مخزون البوكليت الحالي</p>
                         </a>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Fourth Card -->
-        <div class="col-lg-3 col-md-6 col-sm-6">
-            <div class="card card-icon-bg card-icon-bg-primary o-hidden mb-4">
+            <!-- Fourth Card -->
+            <div class="card card-4">
                 <div class="card-body text-center">
-                    <i class="i-Data-Upload"></i>
                     <div class="content">
                         <a href="{% url 'store:home' %}" class="d-block">
-                            <p class="text-muted mt-2 mb-0 link-text">الرئيسية</p>
                             <img src="{% static 'dist-assets/images/products/s44.png' %}" alt="الرئيسية" class="icon-img">
+                            <h3 class="mt-4 mb-2">الرئيسية</h3>
+                            <p class="text-muted">العودة إلى الصفحة الرئيسية</p>
                         </a>
                     </div>
                 </div>
             </div>
         </div>
-
     </div>
 </section>
+
+<style>
+    .booklet-management {
+        background-color: #f8f9fa;
+        padding: 2rem 0;
+    }
+    .section-title {
+        text-align: center;
+        color: #333;
+        margin-bottom: 2rem;
+        font-size: 2.5rem;
+        font-weight: bold;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    }
+    .card-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 2rem;
+    }
+    .card {
+        width: 300px;
+        height: 350px;
+        border-radius: 20px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    .card:hover {
+        transform: translateY(-10px) scale(1.05);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+    }
+    .card-body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        height: 100%;
+        padding: 2rem;
+    }
+    .icon-img {
+        width: 100px;
+        height: 100px;
+        object-fit: contain;
+        margin-bottom: 1rem;
+        transition: transform 0.3s ease;
+    }
+    .card:hover .icon-img {
+        transform: scale(1.1);
+    }
+    .card h3 {
+        font-weight: bold;
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+    .card p {
+        font-size: 0.9rem;
+    }
+    .card a {
+        text-decoration: none;
+        color: inherit;
+    }
+    .card-1 { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
+    .card-2 { background: linear-gradient(135deg, #2af598, #009efd); color: white; }
+    .card-3 { background: linear-gradient(135deg, #ff9a9e, #fad0c4); color: #333; }
+    .card-4 { background: linear-gradient(135deg, #ffecd2, #fcb69f); color: #333; }
+    .card .text-muted {
+        color: rgba(255, 255, 255, 0.8) !important;
+    }
+    .card-3 .text-muted, .card-4 .text-muted {
+        color: rgba(51, 51, 51, 0.8) !important;
+    }
+    @media (max-width: 768px) {
+        .card {
+            width: 250px;
+            height: 300px;
+        }
+        .section-title {
+            font-size: 2rem;
+        }
+    }
+</style>
 {% endblock %}

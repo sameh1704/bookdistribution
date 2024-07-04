@@ -2,62 +2,127 @@
 {% load static %}
 
 {% block content %}
-
 <section class="ul-widget-stat-s1">
-    <div class="row">
-        <div class="col-lg-3 col-md-6 col-sm-6">
-            <div class="card card-icon-bg card-icon-bg-primary o-hidden mb-4">
+    <div class="container-fluid">
+        <div class="circular-layout">
+            <div class="card card-1">
                 <div class="card-body text-center">
-                    <i class="i-Car-Items"></i>
                     <div class="content">
                         <a href="{% url 'store:student_list' %}" class="d-block">
-                            <p class="text-muted mt-2 mb-0 link-text">قائمة الطلاب</p>
                             <img src="{% static 'dist-assets/images/products/s42.png' %}" alt="قائمة الطلاب" class="icon-img">
+                            <h3 class="mt-4 mb-2">قائمة الطلاب</h3>
+                            <p class="text-muted">عرض جميع الطلاب المسجلين</p>
                         </a>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-lg-3 col-md-6 col-sm-6">
-            <div class="card card-icon-bg card-icon-bg-primary o-hidden mb-4">
+
+            <div class="card card-2">
                 <div class="card-body text-center">
-                    <i class="i-Data-Upload"></i>
                     <div class="content">
                         <a href="{% url 'store:add_student' %}" class="d-block">
-                            <p class="text-muted mt-2 mb-0 link-text">إضافة  الطلاب</p>
-                            <img src="{% static 'dist-assets/images/products/s41.png' %}" alt="إضافة  الطلاب" class="icon-img">
+                            <img src="{% static 'dist-assets/images/products/s41.png' %}" alt="إضافة الطلاب" class="icon-img">
+                            <h3 class="mt-4 mb-2">إضافة الطلاب</h3>
+                            <p class="text-muted">تسجيل طالب جديد في النظام</p>
                         </a>
                     </div>
                 </div>
             </div>
-     
-    </div>
-    <div class="col-lg-3 col-md-6 col-sm-6">
-        <div class="card card-icon-bg card-icon-bg-primary o-hidden mb-4">
-            <div class="card-body text-center">
-                <i class="i-Data-Upload"></i>
-                <div class="content">
-                    <a href="{% url 'store:migrate_students' %}" class="d-block">
-                        <p class="text-muted mt-2 mb-0 link-text">ترحيل الطلاب</p>
-                        <img src="{% static 'dist-assets/images/products/s41.png' %}" alt="إضافة  الطلاب" class="icon-img">
-                    </a>
+
+            <div class="card card-3">
+                <div class="card-body text-center">
+                    <div class="content">
+                        <a href="{% url 'store:migrate_students' %}" class="d-block">
+                            <img src="{% static 'dist-assets/images/products/s41.png' %}" alt="ترحيل الطلاب" class="icon-img">
+                            <h3 class="mt-4 mb-2">ترحيل الطلاب</h3>
+                            <p class="text-muted">نقل الطلاب بين الفصول أو المراحل</p>
+                        </a>
+                    </div>
                 </div>
             </div>
-        </div>
 
-</div>
-    <div class="col-lg-3 col-md-6 col-sm-6">
-        <div class="card card-icon-bg card-icon-bg-primary o-hidden mb-4">
-            <div class="card-body text-center">
-                <i class="i-Data-Upload"></i>
-                <div class="content">
-                    <a href="{% url 'store:home' %}" class="d-block">
-                        <p class="text-muted mt-2 mb-0 link-text"> الرئيسية  </p>
-                        <img src="{% static 'dist-assets/images/products/s44.png' %}" alt="إضافة  الطلاب" class="icon-img">
-                    </a>
+            <div class="card card-4">
+                <div class="card-body text-center">
+                    <div class="content">
+                        <a href="{% url 'store:home' %}" class="d-block">
+                            <img src="{% static 'dist-assets/images/products/s44.png' %}" alt="الرئيسية" class="icon-img">
+                            <h3 class="mt-4 mb-2">الرئيسية</h3>
+                            <p class="text-muted">العودة إلى الصفحة الرئيسية</p>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
+
+<style>
+    .circular-layout {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 2rem;
+    }
+    .card {
+        width: 300px;
+        height: 350px;
+        margin: 20px;
+        transition: all 0.3s ease;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    .card:hover {
+        transform: translateY(-10px) rotate(5deg);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+    }
+    .card-body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        height: 100%;
+    }
+    .icon-img {
+        width: 100px;
+        height: 100px;
+        object-fit: contain;
+        margin-bottom: 1rem;
+    }
+    .card h3 {
+        font-weight: bold;
+        font-size: 1.5rem;
+    }
+    .card p {
+        font-size: 0.9rem;
+    }
+    .card a {
+        text-decoration: none;
+        color: inherit;
+    }
+    .card-1 {
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        color: white;
+    }
+    .card-2 {
+        background: linear-gradient(135deg, #2ecc71, #27ae60);
+        color: white;
+    }
+    .card-3 {
+        background: linear-gradient(135deg, #e74c3c, #c0392b);
+        color: white;
+    }
+    .card-4 {
+        background: linear-gradient(135deg, #f39c12, #d35400);
+        color: white;
+    }
+    .card .text-muted {
+        color: rgba(255, 255, 255, 0.8) !important;
+    }
+    @media (max-width: 768px) {
+        .card {
+            width: 250px;
+            height: 300px;
+        }
+    }
+</style>
 {% endblock %}

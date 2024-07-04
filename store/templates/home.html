@@ -3,150 +3,195 @@
 
 {% block content %}
 <section class="ul-widget-stat-s1">
-    <div class="row">
-        <!-- First Card -->
-        <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
-            <div class="card card-icon-bg card-icon-bg-primary o-hidden">
-                <div class="card-body text-center">
-                    <i class="i-Car-Items"></i>
-                    <div class="content">
-                        <a href="{% url 'store:Dashboard' %}" class="d-block">
-                            <p class="text-muted mt-2 mb-0 link-text">الطلاب</p>
-                            <img src="{% static 'dist-assets/images/products/s41.png' %}" alt="قائمة الطلاب" class="icon-img">
-                        </a>
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-12">
+                <div class="circular-layout">
+                    <div class="card card-1">
+                        <div class="card-body text-center">
+                            <div class="content">
+                                <a href="{% url 'store:Dashboard' %}" class="d-block">
+                                    <img src="{% static 'dist-assets/images/products/s41.png' %}" alt="قائمة الطلاب" class="icon-img">
+                                    <h3 class="mt-4 mb-2">الطلاب</h3>
+                                    <p class="text-muted">عرض قائمة الطلاب</p>
+                                </a>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Second Card -->
-        <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
-            <div class="card card-icon-bg card-icon-bg-primary o-hidden">
-                <div class="card-body text-center">
-                    <i class="i-Data-Upload"></i>
-                    <div class="content">
-                        <a href="{% url 'store:note' %}" class="d-block">
-                            <p class="text-muted mt-2 mb-0 link-text">وارد الكراسات</p>
-                            <img src="{% static 'dist-assets/images/products/s8.png' %}" alt="وارد الكراسات" class="icon-img">
-                        </a>
+                    <div class="card card-2">
+                        <div class="card-body text-center">
+                            <div class="content">
+                                <a href="{% url 'store:note' %}" class="d-block">
+                                    <img src="{% static 'dist-assets/images/products/s8.png' %}" alt="وارد الكراسات" class="icon-img">
+                                    <h3 class="mt-4 mb-2">وارد الكراسات</h3>
+                                    <p class="text-muted">إدارة وارد الكراسات</p>
+                                </a>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Third Card -->
-        <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
-            <div class="card card-icon-bg card-icon-bg-primary o-hidden">
-                <div class="card-body text-center">
-                    <i class="i-Data-Upload"></i>
-                    <div class="content">
-                        <a href="{% url 'store:booklet' %}" class="d-block">
-                            <p class="text-muted mt-2 mb-0 link-text">وارد البوكليت</p>
-                            <img src="{% static 'dist-assets/images/products/s320.png' %}" alt="وارد البوكليت" class="icon-img">
-                        </a>
+                    <div class="card card-3">
+                        <div class="card-body text-center">
+                            <div class="content">
+                                <a href="{% url 'store:booklet' %}" class="d-block">
+                                    <img src="{% static 'dist-assets/images/products/s320.png' %}" alt="وارد البوكليت" class="icon-img">
+                                    <h3 class="mt-4 mb-2">وارد البوكليت</h3>
+                                    <p class="text-muted">إدارة وارد البوكليت</p>
+                                </a>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Fourth Card -->
-        <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
-            <div class="card card-icon-bg card-icon-bg-primary o-hidden">
-                <div class="card-body text-center">
-                    <i class="i-Data-Upload"></i>
-                    <div class="content">
-                        <a href="{% url 'store:bookstore' %}" class="d-block">
-                            <p class="text-muted mt-2 mb-0 link-text">وارد الكتب الدراسية</p>
-                            <img src="{% static 'dist-assets/images/products/s221.png' %}" alt="وارد الكتب الدراسية" class="icon-img">
-                        </a>
+                    <div class="card card-4">
+                        <div class="card-body text-center">
+                            <div class="content">
+                                <a href="{% url 'store:bookstore' %}" class="d-block">
+                                    <img src="{% static 'dist-assets/images/products/s221.png' %}" alt="وارد الكتب الدراسية" class="icon-img">
+                                    <h3 class="mt-4 mb-2">وارد الكتب الدراسية</h3>
+                                    <p class="text-muted">إدارة وارد الكتب الدراسية</p>
+                                </a>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Fifth Card -->
-        <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
-            <div class="card card-icon-bg card-icon-bg-primary o-hidden">
-                <div class="card-body text-center">
-                    <i class="i-Data-Upload"></i>
-                    <div class="content">
-                        <a href="{% url 'store:book_distribution' %}" class="d-block">
-                            <p class="text-muted mt-2 mb-0 link-text">صرف الكتب</p>
-                            <img src="{% static 'dist-assets/images/products/s9.png' %}" alt="صرف الكتب" class="icon-img">
-                        </a>
+                    <div class="card card-5">
+                        <div class="card-body text-center">
+                            <div class="content">
+                                <a href="{% url 'store:book_distribution' %}" class="d-block">
+                                    <img src="{% static 'dist-assets/images/products/s9.png' %}" alt="صرف الكتب" class="icon-img">
+                                    <h3 class="mt-4 mb-2">صرف الكتب</h3>
+                                    <p class="text-muted">إدارة عملية صرف الكتب</p>
+                                </a>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-        </div>
 
-        <!-- Sixth Card -->
-        <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
-            <div class="card card-icon-bg card-icon-bg-primary o-hidden">
-                <div class="card-body text-center">
-                    <i class="i-Data-Upload"></i>
-                    <div class="content">
-                        <a href="{% url 'store:book_distribution_list' %}" class="d-block">
-                            <p class="text-muted mt-2 mb-0 link-text">قائمة التوزيع</p>
-                            <img src="{% static 'dist-assets/images/products/s10.png' %}" alt="قائمة التوزيع" class="icon-img">
-                        </a>
+                    <div class="card card-6">
+                        <div class="card-body text-center">
+                            <div class="content">
+                                <a href="{% url 'store:book_distribution_list' %}" class="d-block">
+                                    <img src="{% static 'dist-assets/images/products/s10.png' %}" alt="قائمة التوزيع" class="icon-img">
+                                    <h3 class="mt-4 mb-2">قائمة التوزيع</h3>
+                                    <p class="text-muted">عرض قائمة توزيع الكتب</p>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card card-7">
+                        <div class="card-body text-center">
+                            <div class="content">
+                                <a href="{% url 'store:search_students' %}" class="d-block">
+                                    <img src="{% static 'dist-assets/images/products/s10.png' %}" alt="استعلام حالات التسليم" class="icon-img">
+                                    <h3 class="mt-4 mb-2">استعلام حالات التسليم</h3>
+                                    <p class="text-muted">البحث عن حالات تسليم الكتب</p>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card card-8">
+                        <div class="card-body text-center">
+                            <div class="content">
+                                <a href="{% url 'store:depreciations' %}" class="d-block">
+                                    <img src="{% static 'dist-assets/images/products/s10.png' %}" alt="تسجيل الاهلاكات" class="icon-img">
+                                    <h3 class="mt-4 mb-2">تسجيل الاهلاكات</h3>
+                                    <p class="text-muted">إدارة وتسجيل الاهلاكات</p>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card card-9">
+                        <div class="card-body text-center">
+                            <div class="content">
+                                <a href="{% url 'store:list' %}" class="d-block">
+                                    <img src="{% static 'dist-assets/images/products/s65.png' %}" alt="الموردين والأدوات" class="icon-img">
+                                    <h3 class="mt-4 mb-2">الموردين والأدوات</h3>
+                                    <p class="text-muted">إدارة الموردين والأدوات</p>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card card-10">
+                        <div class="card-body text-center">
+                            <div class="content">
+                                <a href="{% url 'store:outlet' %}" class="d-block">
+                                    <img src="{% static 'dist-assets/images/products/s65.png' %}" alt="صرف خارجى" class="icon-img">
+                                    <h3 class="mt-4 mb-2">صرف خارجى</h3>
+                                    <p class="text-muted">إدارة عمليات الصرف الخارجي</p>
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
-            <div class="card card-icon-bg card-icon-bg-primary o-hidden">
-                <div class="card-body text-center">
-                    <i class="i-Data-Upload"></i>
-                    <div class="content">
-                        <a href="{% url 'store:search_students' %}" class="d-block">
-                            <p class="text-muted mt-2 mb-0 link-text"> استعلام حالات التسليم</p>
-                            <img src="{% static 'dist-assets/images/products/s10.png' %}" alt="قائمة التوزيع" class="icon-img">
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
-            <div class="card card-icon-bg card-icon-bg-primary o-hidden">
-                <div class="card-body text-center">
-                    <i class="i-Data-Upload"></i>
-                    <div class="content">
-                        <a href="{% url 'store:depreciations' %}" class="d-block">
-                            <p class="text-muted mt-2 mb-0 link-text">   تسجيل الاهلاكات</p>
-                            <img src="{% static 'dist-assets/images/products/s10.png' %}" alt="قائمة التوزيع" class="icon-img">
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Seventh Card -->
-        <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
-            <div class="card card-icon-bg card-icon-bg-primary o-hidden">
-                <div class="card-body text-center">
-                    <i class="i-Data-Upload"></i>
-                    <div class="content">
-                        <a href="{% url 'store:list' %}" class="d-block">
-                            <p class="text-muted mt-2 mb-0 link-text">الموردين والأدوات</p>
-                            <img src="{% static 'dist-assets/images/products/s65.png' %}" alt="الموردين والأدوات" class="icon-img">
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
- <!-- Seventh Card -->
- <div class="col-lg-3 col-md-6 col-sm-6 mb-4">
-    <div class="card card-icon-bg card-icon-bg-primary o-hidden">
-        <div class="card-body text-center">
-            <i class="i-Data-Upload"></i>
-            <div class="content">
-                <a href="{% url 'store:outlet' %}" class="d-block">
-                    <p class="text-muted mt-2 mb-0 link-text"> صرف خارجى</p>
-                    <img src="{% static 'dist-assets/images/products/s65.png' %}" alt="الموردين والأدوات" class="icon-img">
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
     </div>
 </section>
+
+<style>
+    .circular-layout {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 2rem;
+    }
+    .card {
+        width: 300px;
+        height: 350px;
+        margin: 20px;
+        transition: all 0.3s ease;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    .card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+    }
+    .card-body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        height: 100%;
+    }
+    .icon-img {
+        width: 100px;
+        height: 100px;
+        object-fit: contain;
+        margin-bottom: 1rem;
+    }
+    .card h3 {
+        font-weight: bold;
+    }
+    .card p {
+        font-size: 0.9rem;
+    }
+    .card a {
+        text-decoration: none;
+        color: inherit;
+    }
+    .card-1 { background: linear-gradient(135deg, #3498db, #2980b9); color: white; }
+    .card-2 { background: linear-gradient(135deg, #2ecc71, #27ae60); color: white; }
+    .card-3 { background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; }
+    .card-4 { background: linear-gradient(135deg, #f39c12, #d35400); color: white; }
+    .card-5 { background: linear-gradient(135deg, #9b59b6, #8e44ad); color: white; }
+    .card-6 { background: linear-gradient(135deg, #1abc9c, #16a085); color: white; }
+    .card-7 { background: linear-gradient(135deg, #34495e, #2c3e50); color: white; }
+    .card-8 { background: linear-gradient(135deg, #e67e22, #d35400); color: white; }
+    .card-9 { background: linear-gradient(135deg, #95a5a6, #7f8c8d); color: white; }
+    .card-10 { background: linear-gradient(135deg, #16a085, #1abc9c); color: white; }
+    .card .text-muted {
+        color: rgba(255, 255, 255, 0.8) !important;
+    }
+    @media (max-width: 768px) {
+        .card {
+            width: 250px;
+            height: 300px;
+        }
+    }
+</style>
 {% endblock %}

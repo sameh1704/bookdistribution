@@ -200,9 +200,10 @@ from .models import BookletDelivery
 class BookletDeliveryForm(forms.ModelForm):
     class Meta:
         model = BookletDelivery
-        fields = ['booklet_type', 'quantity', 'received_date']
+        fields = ['booklet_type', 'supplier', 'quantity', 'received_date']
         widgets = {
             'booklet_type': forms.Select(attrs={'class': 'form-control'}),
+            'supplier': forms.Select(attrs={'class': 'form-control'}),
             'quantity': forms.NumberInput(attrs={'class': 'form-control'}),
             'received_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
         }
@@ -402,7 +403,7 @@ class NotebookDepreciationForm(forms.ModelForm):
 class BookOutstoreForm(forms.ModelForm):
     class Meta:
         model = BookOutstore
-        fields = ['name', 'book', 'quantity', 'date']
+        fields = ['name', 'stage','class_level','book', 'quantity', 'date']
         widgets = {
             'date': forms.DateInput(attrs={'type': 'date'}),
         }
@@ -412,8 +413,7 @@ class BookOutstoreForm(forms.ModelForm):
 class BookletOutstoreForm(forms.ModelForm):
     class Meta:
         model = BookletOutstore
-        fields = ['name', 'booklet', 'quantity', 'date']
+        fields = ['name', 'stage','class_level', 'booklet', 'quantity', 'date']
         widgets = {
             'date': forms.DateInput(attrs={'type': 'date'}),
         }
-

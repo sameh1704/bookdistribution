@@ -94,11 +94,13 @@ urlpatterns = [
     
 
    path('bookoutlet/', BookOutstoreCreateView.as_view(), name='bookoutlet'),
+   path('bookoutlet_list/', BookOutstoreListView.as_view(), name='bookoutlet_list'),
    
    path('bookletoutlet/', BookletOutstoreCreateView.as_view(), name='bookletoutlet'),
- 
+   path('bookletoutlet_list/', BookletOutstoreListView.as_view(), name='bookletoutlet_list'),
 
-
+   path('get_books/', get_books, name='get_books'),
+   path('get_booklets/', views.get_booklets, name='get_booklets'),
 
     #path('stock-report/', views.stock_report_view, name='stock_report'),
     #path('load-class-levels/', views.load_class_levels, name='load_class_levels'),

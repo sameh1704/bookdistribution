@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid">
+<h2>قائمة صرف البوكليت</h2>
+
+<div class="table-responsive">
+    <table class="table table-bordered table-striped">
+        <thead class="thead-dark">
+
+    <tr>
+      <th>اسم المستلم</th>
+      <th>المرحلة الدراسية</th>
+      <th>الصف الدراسي</th>
+      <th>البوكليت</th>
+      <th>الكمية</th>
+      <th>تاريخ الصرف</th>
+     
+    </tr>
+  </thead>
+  <tbody>
+    {% for outstore in object_list %}
+    <tr>
+      <td>{{ outstore.name }}</td>
+      <td>{{ outstore.stage }}</td>
+      <td>{{ outstore.class_level }}</td>
+      <td>{{ outstore.booklet.title}}</td>
+      <td>{{ outstore.quantity }}</td>
+      <td>{{ outstore.date|date:"Y-m-d" }}</td>
+      
+     
+    </tr>
+    {% empty %}
+    <tr>
+      <td colspan="7">لا يوجد عمليات صرف.</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

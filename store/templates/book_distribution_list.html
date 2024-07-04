@@ -35,15 +35,12 @@
                 {{ filter.form.recipient_name }}
             </div>
             <div class="form-group col-md-2">
-
                 <label>تاريخ التوزيع من:</label>
-            <input type="date" name="delivery_date__gte" value="{{ request.GET.delivery_date__gte }}">
-               
+                <input type="date" name="delivery_date__gte" value="{{ request.GET.delivery_date__gte }}">
             </div>
             <div class="form-group col-md-2">
-                <label >تاريخ التوزيع إلى:</label>
+                <label>تاريخ التوزيع إلى:</label>
                 <input type="date" name="delivery_date__lte" value="{{ request.GET.delivery_date__lte }}">
-                
             </div>
             <div class="form-group col-md-2">
                 <label for="id_distribution_status">حالة التوزيع:</label>
@@ -67,6 +64,7 @@
                     <th scope="col">حالة التوزيع</th>
                     <th scope="col">الكتب المسلمة</th>
                     <th scope="col">الكراسات المسلمة</th>
+                   
                     <th scope="col">البوكليتات المسلمة</th>
                     <th scope="col">التعديل / الحذف</th>
                 </tr>
@@ -85,6 +83,7 @@
                         <td>{{ distribution.get_distribution_status_display }}</td>
                         <td>{{ distribution.get_books_titles }}</td>
                         <td>{{ distribution.get_notebooks_titles }}</td>
+                     
                         <td>{{ distribution.get_booklets_titles }}</td>
                         <td>
                             <a href="{% url 'store:book_distribution_update' distribution.pk %}" class="btn btn-warning btn-sm">تعديل</a>
@@ -109,6 +108,5 @@
         </span>
     </div>
     <a href="{% url 'store:export_to_excel' %}?{{ request.GET.urlencode }}" class="btn btn-success">تصدير إلى Excel</a>
-
 </div>
 {% endblock %}

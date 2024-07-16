@@ -1,67 +1,113 @@
-from datetime import datetime
-from turtle import pd
-
-from django.contrib import messages
-from django.contrib.messages.views import SuccessMessageMixin
-from django.core.paginator import Paginator
-from django.db.models import Q
+from datetime import date, datetime
+import pandas as pd
+import xlsxwriter
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse, reverse_lazy
+from django.contrib import messages
 from django.views import View
-from django.views.generic import CreateView, FormView
-from django.views.generic.edit import CreateView
+from django.views.generic import CreateView, FormView, UpdateView, DeleteView, ListView
 from django_filters.views import FilterView
+from django.core.paginator import Paginator
+from django.db.models import Q, Prefetch
+from django.utils.translation import gettext as _
+from django.contrib.auth.decorators import login_required, user_passes_test
 
+from store import serializers
+from store.utils import calculate_required_resources
+
+from .forms import (
+    BookDepreciationForm, BookOutstoreForm, BookletDepreciationForm,
+    BookletOutstoreForm, NotebookDepreciationForm, StudentForm,
+    BookDistributionForm, StudentSearchForm, StudentSelectForm,
+    SchoolBookletForm, SchoolSuppliesForm, NotebookTypeForm,
+    BookForm, NotebookAssignmentForm, SupplierForm,
+    BookDeliveryForm, NotebookDeliveryForm, BookletDeliveryForm,
+    StudentMigrationForm, SearchForm, NotebookRequestForm
+)
+from .models import (
+    AcademicYear, Book, BookDepreciation, BookDistribution,
+    BookOutstore, BookletDepreciation, BookletOutstore, ClassLevel,
+    Classroom, NotebookAssignment, NotebookDepreciation, NotebookType,
+    SchoolBooklet, Stage, Student, Supplier, BookDelivery,
+    NotebookDelivery, BookletDelivery, SchoolBooklet, BookDistribution
+)
+
+from .NotebookTypeFilter import NotebookTypeFilter
 from store.SchoolBookletFilter import SchoolBookletFilter
 from .Bookfilter import BookDistributionFilter
-from django.views.generic import UpdateView, DeleteView
-import xlsxwriter
-from django.http import HttpResponse
-from .BOOK_LIST import BookFilter
-import pandas as pd
-
+from .filters import SupplierFilter
 from .filters import StudentFilter
-from .forms import ( BookDepreciationForm, BookOutstoreForm, BookletDepreciationForm, BookletOutstoreForm, NotebookDepreciationForm, StudentForm, BookDistributionForm, StudentSearchForm,
-                    StudentSelectForm, SchoolBookletForm, SchoolSuppliesForm,
-                    NotebookTypeForm, BookForm, NotebookAssignmentForm)
-from .models import (AcademicYear, Book, BookDepreciation, BookDistribution, BookOutstore, BookletDepreciation, BookletOutstore, ClassLevel,
-                     Classroom, NotebookAssignment, NotebookDepreciation, NotebookType, SchoolBooklet,
-                     Stage, Student, Supplier)
+from .BOOK_LIST import BookFilter
+
+
+
+from accounts.decorators import custom_permission_required, CustomPermissionMixin
+
+
+
+
+
+
+
+#############################################################################################
+
+
 
 
 ##############################################################################33
+@login_required
+@custom_permission_required('is_admin', 'is_editor', 'is_viewer')
 def home(request):
 
     return render(request, 'home.html')
+
+@login_required
+@custom_permission_required('is_admin', 'is_editor', 'is_viewer')
 def list(request):
 
     return render(request, 'list.html')
 
+@login_required
+@custom_permission_required('is_admin', 'is_editor', 'is_viewer')
 def Dashboard(request):
 
     return render(request, 'Dashboard.html')
 
+@login_required
+@custom_permission_required('is_admin', 'is_editor', 'is_viewer')
 
 def allstudent(request):
 
     return render(request, 'student.html')
 
+@login_required
+@custom_permission_required('is_admin', 'is_editor', 'is_viewer')
 def bookstore(request):
 
     return render(request, 'bookstore.html')
+
+@login_required
+@custom_permission_required('is_admin', 'is_editor', 'is_viewer')
 def note(request):
 
     return render(request, 'note.html')
+
+@login_required
+@custom_permission_required('is_admin', 'is_editor', 'is_viewer')
 def booklet(request):
 
     return render(request, 'booklet.html')
 
-
+@login_required
+@custom_permission_required('is_admin', 'is_editor', 'is_viewer')
 
 def depreciations(request):
 
     return render(request, 'depreciations.html')
+
+@login_required
+@custom_permission_required('is_admin', 'is_editor', 'is_viewer')
 
 def outlet(request):
 
@@ -69,9 +115,8 @@ def outlet(request):
 
 ################################################################33
 
-from django.shortcuts import render, redirect
-from .forms import SupplierForm
-
+@login_required
+@custom_permission_required('is_admin', 'is_editor')
 def create_supplier(request):
     if request.method == 'POST':
         form = SupplierForm(request.POST)
@@ -83,15 +128,11 @@ def create_supplier(request):
     return render(request, 'create_supplier.html', {'form': form})
 
 ################################################
-# views.py
 
-from django.views.generic import ListView
-from django_filters.views import FilterView
-from django.core.paginator import Paginator
-from .models import Supplier
-from .filters import SupplierFilter
 
-class SupplierListView(FilterView):
+
+class SupplierListView(CustomPermissionMixin, FilterView):
+    permissions = ['is_admin', 'is_editor', 'is_viewer']
     model = Supplier
     template_name = 'supplier_list.html'
     filterset_class = SupplierFilter
@@ -108,18 +149,8 @@ class SupplierListView(FilterView):
 
         return context
 
-from django.http import HttpResponse
-import xlsxwriter
-from .models import Supplier
-from .filters import SupplierFilter
-from datetime import datetime
-
-from datetime import datetime
-import xlsxwriter
-from django.http import HttpResponse
-from django.shortcuts import render
-from .models import Supplier, Book, SchoolBooklet, NotebookType
-
+@login_required
+@custom_permission_required('is_admin', 'is_editor')
 def export_supplier_excel(request):
     # تحديد اسم الملف مع تضمين التاريخ الحالي
     filename = f"supplier_list_{datetime.now().strftime('%Y-%m-%d')}.xlsx"
@@ -174,12 +205,11 @@ def export_supplier_excel(request):
 
 
 ###################################################################
-from django.shortcuts import render, get_object_or_404, redirect
-from django.urls import reverse
-from .models import Supplier
-from .forms import SupplierForm
 
-# عرض لتعديل المورد
+
+@login_required
+@custom_permission_required('is_admin', 'is_editor')
+
 def edit_supplier(request, pk):
     supplier = get_object_or_404(Supplier, pk=pk)
     if request.method == 'POST':
@@ -191,7 +221,9 @@ def edit_supplier(request, pk):
         form = SupplierForm(instance=supplier)
     return render(request, 'edit_supplier.html', {'form': form, 'supplier': supplier})
 
-# عرض لحذف المورد
+@login_required
+@custom_permission_required('is_admin', 'is_editor')
+
 def delete_supplier(request, pk):
     supplier = get_object_or_404(Supplier, pk=pk)
     if request.method == 'POST':
@@ -202,6 +234,8 @@ def delete_supplier(request, pk):
 
 ################################################################33
 
+@login_required
+@custom_permission_required('is_admin', 'is_editor')
 
 def add_student(request):
     if request.method == 'POST':
@@ -214,6 +248,8 @@ def add_student(request):
         form = StudentForm()
     return render(request, 'add_student.html', {'form': form})
 
+@login_required
+@custom_permission_required('is_admin', 'is_editor')
 def import_students(request):
     if request.method == 'POST' and request.FILES['excel_file']:
         excel_file = request.FILES['excel_file']
@@ -251,6 +287,8 @@ def import_students(request):
 
 import pandas as pd
 
+@login_required
+@custom_permission_required('is_admin', 'is_editor')
 def export_students(request):
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     filename = f"طلاب_{timestamp}.xlsx"
@@ -276,9 +314,8 @@ def export_students(request):
 
 ############################################################################################
 
-from django.http import JsonResponse
-from django.db.models import Prefetch
-
+@login_required
+@custom_permission_required('is_admin', 'is_editor')
 def get_class_student(request):
     stage_id = request.GET.get('stage_id')
     class_level_id = request.GET.get('class_level_id')
@@ -317,7 +354,9 @@ def get_class_student(request):
 ##########################################################################################################################
 
 
-class studentListView(FilterView):
+
+class studentListView(CustomPermissionMixin, FilterView):
+    permissions = ['is_admin', 'is_editor', 'is_viewer']
     model = Student
     template_name = 'Student_list.html'
     filterset_class = StudentFilter
@@ -344,7 +383,8 @@ class studentListView(FilterView):
 
 
  #######################################################################################################33
-
+@login_required
+@custom_permission_required('is_admin', 'is_editor')
 def export_Student_excel(request):
     # تحديد اسم الملف مع تضمين التاريخ الحالي
     filename = f"Student_list_{datetime.now().strftime('%Y-%m-%d')}.xlsx"
@@ -390,7 +430,8 @@ def export_Student_excel(request):
     return response
 
 ########################################################3
-
+@login_required
+@custom_permission_required('is_admin', 'is_editor')
 def add_book(request):
     if request.method == 'POST':
         form = BookForm(request.POST)
@@ -417,12 +458,9 @@ def edit_book(request, pk):
 
     return render(request, 'edit_book.html', {'form': form, 'book': book})
 ###############################################
-from .forms import BookDeliveryForm
-from .models import Book, BookDelivery
 
-from django.db.models import Q
-
-class BookListView(FilterView):
+class BookListView(CustomPermissionMixin, FilterView):
+    permissions = ['is_admin', 'is_editor', 'is_viewer']
     model = Book
     template_name = 'book_list.html'
     filterset_class = BookFilter
@@ -455,7 +493,8 @@ class BookListView(FilterView):
 
 #####################################################################
 # دالة لإضافة توريد كتاب
-from django.contrib import messages
+@login_required
+@custom_permission_required('is_admin', 'is_editor')
 
 def add_BookDelivery(request):
     if request.method == 'POST':
@@ -477,7 +516,8 @@ def add_BookDelivery(request):
 
 
 
-
+@login_required
+@custom_permission_required('is_admin', 'is_editor')
 # تعديل export_book_excel
 def export_book_excel(request):
     filename = f"book_list_{datetime.now().strftime('%Y-%m-%d')}.xlsx"
@@ -538,7 +578,8 @@ def export_book_excel(request):
 
 
 ######################################################################################
-
+@login_required
+@custom_permission_required('is_admin', 'is_editor')
 
 def add_notebook_type(request):
     if request.method == 'POST':
@@ -550,11 +591,9 @@ def add_notebook_type(request):
     else:
         form = NotebookTypeForm()
     return render(request, 'add_notebook_type.html', {'form': form})
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from .forms import NotebookDeliveryForm
-from .models import NotebookType, NotebookDelivery
 
+@login_required
+@custom_permission_required('is_admin', 'is_editor')
 def add_notebook_delivery(request):
     if request.method == 'POST':
         form = NotebookDeliveryForm(request.POST)
@@ -573,7 +612,8 @@ def add_notebook_delivery(request):
         form = NotebookDeliveryForm()
     return render(request, 'add_notebook_delivery.html', {'form': form})
 
-
+@login_required
+@custom_permission_required('is_admin', 'is_editor')
 def edit_notebook_type(request, pk):
     notebook = get_object_or_404(NotebookType, pk=pk)
 
@@ -589,15 +629,10 @@ def edit_notebook_type(request, pk):
     return render(request, 'edit_notebook_type.html', {'form': form, 'notebook': notebook})
 
 #############################################################
-from django.shortcuts import render
-from django.http import HttpResponse
-import xlsxwriter
-from django.views.generic import ListView
-from django_filters.views import FilterView
-from .models import NotebookType
-from .NotebookTypeFilter import NotebookTypeFilter
 
-class NotebookTypeListView(FilterView):
+
+class NotebookTypeListView(CustomPermissionMixin, FilterView):
+    permissions = ['is_admin', 'is_editor', 'is_viewer']
     model = NotebookType
     template_name = 'notebooktype_list.html'
     filterset_class = NotebookTypeFilter
@@ -616,8 +651,11 @@ class NotebookTypeListView(FilterView):
         filtered_notebooks = filterset.qs
         deliveries = NotebookDelivery.objects.filter(notebook_type__in=filtered_notebooks)
         context['deliveries'] = deliveries
+   
         return context
-
+    
+@login_required
+@custom_permission_required('is_admin', 'is_editor')
 def export_notebooktype_excel(request):
     filename = f"NotebookType_list_{datetime.now().strftime('%Y-%m-%d')}.xlsx"
 
@@ -684,7 +722,8 @@ def export_notebooktype_excel(request):
     workbook.close()
     return response
 #####################################################################################3
-
+@login_required
+@custom_permission_required('is_admin', 'is_editor')
 
 def add_notebook_assignment(request):
     if request.method == 'POST':
@@ -701,13 +740,15 @@ def get_class_levels(request):
     class_levels = ClassLevel.objects.filter(stage_id=stage_id).order_by('name')
     return render(request, 'class_levels_options.html', {'class_levels': class_levels})
 
-class NotebookAssignmentListView(ListView):
+class NotebookAssignmentListView(CustomPermissionMixin, ListView):
+    permissions = ['is_admin', 'is_editor', 'is_viewer']
     model = NotebookAssignment
     template_name = 'notebook_assignment_list.html'  
     context_object_name = 'assignments' 
     paginate_by = 10  
 
-
+@login_required
+@custom_permission_required('is_admin', 'is_editor')
 def edit_notebook_assignment(request, pk):
     assignment = get_object_or_404(NotebookAssignment, pk=pk)
     if request.method == 'POST':
@@ -721,7 +762,8 @@ def edit_notebook_assignment(request, pk):
 
 ###############################################################################################
 
-
+@login_required
+@custom_permission_required('is_admin', 'is_editor')
 def add_school_booklet(request):
     if request.method == 'POST':
         form = SchoolBookletForm(request.POST)
@@ -736,8 +778,11 @@ def get_class_levels(request):
     stage_id = request.GET.get('stage_id')
     class_levels = ClassLevel.objects.filter(stage_id=stage_id)
     data = [{'id': class_level.id, 'name': class_level.name} for class_level in class_levels]
+
     return JsonResponse(data, safe=False)
 
+@login_required
+@custom_permission_required('is_admin', 'is_editor')
 def edit_school_booklet(request, pk):
     booklet = get_object_or_404(SchoolBooklet, pk=pk)
 
@@ -753,14 +798,10 @@ def edit_school_booklet(request, pk):
     return render(request, 'edit_school_booklet.html', {'form': form, 'booklet': booklet})
 ##################################################
 
-from django_filters.views import FilterView
-from django.core.paginator import Paginator
 
-from .models import SchoolBooklet
-import xlsxwriter
-from datetime import datetime
 
-class SchoolBookletListView(ListView):
+class SchoolBookletListView(CustomPermissionMixin, ListView):
+    permissions = ['is_admin', 'is_editor', 'is_viewer']
     model = SchoolBooklet
     template_name = 'school_booklet_list.html'
     paginate_by = 10
@@ -782,12 +823,8 @@ class SchoolBookletListView(ListView):
         context['deliveries'] = booklet_deliveries
 
         return context
-
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from django.utils.translation import gettext as _
-from .forms import BookletDeliveryForm
-from .models import BookletDelivery, SchoolBooklet
+@login_required
+@custom_permission_required('is_admin', 'is_editor')
 
 def add_BookletDelivery(request):
     if request.method == 'POST':
@@ -808,7 +845,8 @@ def add_BookletDelivery(request):
     return render(request, 'add_booklet_delivery.html', {'form': form})
 
     
-
+@login_required
+@custom_permission_required('is_admin', 'is_editor')
 def export_school_booklet_excel(request):
     filename = f"school_booklet_list_{datetime.now().strftime('%Y-%m-%d')}.xlsx"
 
@@ -879,7 +917,8 @@ def export_school_booklet_excel(request):
 
 ###############################################################################################
 
-
+@login_required
+@custom_permission_required('is_admin', 'is_editor')
 def add_school_supplies(request):
     if request.method == 'POST':
         form = SchoolSuppliesForm(request.POST)
@@ -892,7 +931,9 @@ def add_school_supplies(request):
 ##################################################################################################################################
 
 
-class BookDistributionCreateView(CreateView):
+
+class BookDistributionCreateView(CustomPermissionMixin, CreateView):
+    permissions = ['is_admin', 'is_editor']
     model = BookDistribution
     form_class = BookDistributionForm
     template_name = 'book_distribution_form.html'
@@ -931,7 +972,6 @@ class BookDistributionCreateView(CreateView):
         
         ###################################################
 
-from django.core import serializers
 
 def search_student(request):
     if request.method == 'GET':
@@ -972,13 +1012,12 @@ def get_selected_student(request):
 #####################################3
 
 # الحصول على الكتب المتاحة
-from datetime import date
 
 def get_current_term():
     today = date.today()
     if today.month in [9, 10, 11, 12]:  # من سبتمبر إلى ديسمبر
         return 'الترم الأول'
-    elif today.month in [1, 2, 3, 4, 5, 6]:  # من يناير إلى أبريل
+    elif today.month in [1, 2, 3, 4, 5, 6, 7, 8]:  # من يناير إلى أبريل
         return 'الترم الثاني'
     else:
         return None  # خارج نطاق التوزيع
@@ -1036,7 +1075,7 @@ def get_available_books(request):
 
 
 ##########################################################################3
-from datetime import datetime
+
 
 def get_available_notebooks(request):
     if request.method == 'GET' and 'student_id' in request.GET:
@@ -1090,9 +1129,7 @@ def get_available_notebooks(request):
 
 #################################################################################
 
-# الحصول على البوكليتات المتاحة
-from django.http import JsonResponse
-from .models import Student, SchoolBooklet, BookDistribution
+
 
 # الحصول على البوكليتات المتاحة
 def get_available_booklets(request):
@@ -1154,7 +1191,7 @@ def get_available_booklets(request):
 
 
 ####################################3
-from django.http import JsonResponse
+
 
 def get_student_info(request):
     if request.method == 'GET' and 'student_id' in request.GET:
@@ -1178,19 +1215,18 @@ def get_student_info(request):
 #########################################################################################################
 
 
-class BookDistributionUpdateView(UpdateView):
+class BookDistributionUpdateView(CustomPermissionMixin, UpdateView):
+    permissions = ['is_admin', 'is_editor']
     model = BookDistribution
     fields = ['student', 'stage', 'class_level', 'section', 'receipt_number', 'books', 'notebooks', 'booklets', 'delivery_date', 'distribution_status', 'recipient_name']
     template_name = 'book_distribution_update.html'
     success_url = reverse_lazy('store:book_distribution_list')
 
 
-from django.views.generic import DeleteView
-from django.urls import reverse_lazy
-from django.contrib import messages
-from django.http import HttpResponseRedirect
 
-class BookDistributionDeleteView(DeleteView):
+
+class BookDistributionDeleteView(CustomPermissionMixin, DeleteView):
+    permissions = ['is_admin', 'is_editor']
     model = BookDistribution
     success_url = reverse_lazy('store:home')
     template_name = 'book_distribution_confirm_delete.html'
@@ -1206,7 +1242,10 @@ class BookDistributionDeleteView(DeleteView):
         return HttpResponseRedirect(success_url)
 
 ########################################################################################################
-class BookDistributionListView(FilterView):
+
+
+class BookDistributionListView(CustomPermissionMixin, FilterView):
+    permissions = ['is_admin', 'is_editor', 'is_viewer']
     filterset_class = BookDistributionFilter
     queryset = BookDistribution.objects.all()
     template_name = 'book_distribution_list.html'
@@ -1222,6 +1261,8 @@ class BookDistributionListView(FilterView):
         return context
     
 
+@login_required
+@custom_permission_required('is_admin', 'is_editor')
 
 def export_to_excel(request):
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
@@ -1276,10 +1317,8 @@ def export_to_excel(request):
 
 
 ########################################################################################################
-from django.shortcuts import render, redirect
-from .forms import StudentMigrationForm
-
-
+@login_required
+@custom_permission_required('is_admin', 'is_editor')
 
 def migrate_students_view(request):
     if request.method == 'POST':
@@ -1294,13 +1333,9 @@ def migrate_students_view(request):
 
 ####################################################################################################################
 
-from .forms import SearchForm
-import pandas as pd
 
-from django.shortcuts import render, redirect, get_object_or_404
-from .models import Stage, ClassLevel, Student, BookDistribution
-from .forms import SearchForm
-from django.core.paginator import Paginator
+@login_required
+@custom_permission_required('is_admin', 'is_editor')
 
 def student_distribution_search(request):
     form = SearchForm(request.POST or None)
@@ -1384,9 +1419,8 @@ def student_distribution_search(request):
 
 
 #############################################################################
-
-
-from .models import Student, Stage, ClassLevel, BookDistribution
+@login_required
+@custom_permission_required('is_admin', 'is_editor')
 
 def export_students_to_excel(students):
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
@@ -1426,52 +1460,59 @@ def export_students_to_excel(students):
 
 ###############################################################################################################################
 
-class BookDepreciationCreateView(CreateView):
+
+class BookDepreciationCreateView(CustomPermissionMixin, CreateView):
+    permissions = ['is_admin', 'is_editor']
     model = BookDepreciation
     form_class = BookDepreciationForm
     template_name = 'book_depreciation_form.html'
     success_url = reverse_lazy('store:depreciations')
 
-class BookDepreciationListView(ListView):
+class BookDepreciationListView(CustomPermissionMixin, ListView):
+    permissions = ['is_admin', 'is_editor', 'is_viewer']
     model = BookDepreciation
     template_name = 'book_depreciation_list.html'
     context_object_name = 'depreciations'
 
 ###############################################################################################################################
 
-class BookletDepreciationCreateView(CreateView):
+class BookletDepreciationCreateView(CustomPermissionMixin, CreateView):
+    permissions = ['is_admin', 'is_editor']
     model = BookDepreciation
     form_class = BookletDepreciationForm
     template_name = 'booklet_depreciation_form.html'
     success_url = reverse_lazy('store:depreciations')
 
-class BookletDepreciationListView(ListView):
+
+class BookletDepreciationListView(CustomPermissionMixin, ListView):
+    permissions = ['is_admin', 'is_editor', 'is_viewer']
     model = BookletDepreciation
     template_name = 'booklet_depreciation_list.html'
     context_object_name = 'depreciations'
 
 ###############################################################################################################################
 
-class NotebooDepreciationCreateView(CreateView):
+
+class NotebooDepreciationCreateView(CustomPermissionMixin, CreateView):
+    permissions = ['is_admin', 'is_editor']
     model = BookletDepreciation
     form_class = NotebookDepreciationForm
     template_name = 'notebook_depreciation_form.html'
     success_url = reverse_lazy('store:depreciations')
 
-class NotebooDepreciationListView(ListView):
+
+class NotebooDepreciationListView(CustomPermissionMixin, ListView):
+    permissions = ['is_admin', 'is_editor', 'is_viewer']
     model = NotebookDepreciation
     template_name = 'notebook_depreciation_list.html'
     context_object_name = 'depreciations'
 
 ###############################################################################################################################
 
-# views.py
-from django.http import JsonResponse
-from django.views.generic import CreateView
-from .models import BookOutstore, Book, Stage, ClassLevel
-from .forms import BookOutstoreForm
 
-class BookOutstoreCreateView(CreateView):
+
+class BookOutstoreCreateView(CustomPermissionMixin, CreateView):
+    permissions = ['is_admin', 'is_editor']
     model = BookOutstore
     form_class = BookOutstoreForm
     template_name = 'BookOutstore_form.html'
@@ -1543,14 +1584,18 @@ def get_books(request):
         return JsonResponse(data)
     return JsonResponse({})
 #########################################
-class BookOutstoreListView(ListView):
+
+class BookOutstoreListView(CustomPermissionMixin, ListView):
+    permissions = ['is_admin', 'is_editor']
     model = BookOutstore
     form_class = BookOutstoreForm
     template_name = 'BookOutstore_list.html'
  
 ###############################################################################################################################
 
-class BookletOutstoreCreateView(CreateView):
+
+class BookletOutstoreCreateView(CustomPermissionMixin, CreateView):
+    permissions = ['is_admin', 'is_editor']
     model = BookletOutstore
     form_class = BookletOutstoreForm
     template_name = 'BookletOutstore_form.html'
@@ -1599,7 +1644,68 @@ def get_booklets(request):
     return JsonResponse({})
 
 #########################################
-class BookletOutstoreListView(ListView):
+
+class BookletOutstoreListView(CustomPermissionMixin, ListView):
+    permissions = ['is_admin', 'is_editor']
     model = BookletOutstore
     form_class = BookletOutstoreForm
     template_name = 'bookletoutlet_list.html'
+
+
+
+
+###############################################################################################
+
+@login_required
+@custom_permission_required('is_admin', 'is_editor')
+
+def required_resources_view(request):
+    required_resources = calculate_required_resources()
+
+    context = {
+        'required_books': required_resources['books'],
+       
+        'required_booklets': required_resources['booklets'],
+    }
+    return render(request, 'required_resources.html', context)
+
+
+
+###############################################################################################################3
+
+
+def load_class_levels(request):
+    stage_id = request.GET.get('stage_id')
+    class_levels = ClassLevel.objects.filter(stage_id=stage_id).order_by('name')
+    data = [{'id': class_level.id, 'name': class_level.name} for class_level in class_levels]
+
+    return JsonResponse(data, safe=False)
+
+
+@login_required
+@custom_permission_required('is_admin', 'is_editor')
+def notebook_request_view(request):
+    form = NotebookRequestForm()
+    results = []
+
+    if request.method == 'POST':
+        form = NotebookRequestForm(request.POST)
+        if form.is_valid():
+            stage = form.cleaned_data['stage']
+            class_levels = form.cleaned_data['class_levels']
+            notebook_type = form.cleaned_data['notebook_type']
+            quantity_per_student = form.cleaned_data['quantity_per_student']
+
+            student_count = Student.objects.filter(stage=stage, class_level__in=class_levels).count()
+            required_quantity = (quantity_per_student * student_count) - notebook_type.live_quantity
+
+            results.append({
+                'stage': stage.stage,
+                'class_levels': ", ".join([class_level.name for class_level in class_levels]),
+                'notebook_type': notebook_type.name,
+                'required_quantity': max(0, required_quantity)
+            })
+
+    return render(request, 'notebook_request.html', {'form': form, 'results': results})
+
+

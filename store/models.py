@@ -569,7 +569,7 @@ def get_current_term():
     today = date.today()
     if today.month in [9, 10, 11, 12]:  # من سبتمبر إلى ديسمبر
         return 'الترم الأول'
-    elif today.month in [1, 2, 3, 4, 5, 6]:  # من يناير إلى أبريل
+    elif today.month in [1, 2, 3, 4, 5, 6, 7, 8]:  # من يناير إلى أبريل
         return 'الترم الثاني'
     else:
         return None  # خارج نطاق التوزيع

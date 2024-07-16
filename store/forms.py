@@ -417,3 +417,32 @@ class BookletOutstoreForm(forms.ModelForm):
         widgets = {
             'date': forms.DateInput(attrs={'type': 'date'}),
         }
+#######################################################################################
+# forms.py
+from django import forms
+from .models import Stage, ClassLevel, NotebookType
+
+class NotebookRequestForm(forms.Form):
+    stage = forms.ModelChoiceField(queryset=Stage.objects.all(), label='المرحلة')
+    class_levels = forms.ModelMultipleChoiceField(
+        queryset=ClassLevel.objects.none(),
+        label='الصفوف',
+        required=False,
+        widget=forms.CheckboxSelectMultiple
+    )
+    notebook_type = forms.ModelChoiceField(queryset=NotebookType.objects.all(), label='نوع الكراسة')
+    quantity_per_student = forms.IntegerField(label='الكمية لكل طالب', min_value=1)
+
+    def __init__(self, *args, **kwargs):
+        super(NotebookRequestForm, self).__init__(*args, **kwargs)
+        if 'stage' in self.data:
+            try:
+                stage_id = int(self.data.get('stage'))
+                self.fields['class_levels'].queryset = ClassLevel.objects.filter(stage_id=stage_id).order_by('name')
+            except (ValueError, TypeError):
+                pass
+        else:
+            self.fields['class_levels'].queryset = ClassLevel.objects.none()
+
+
+

@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block extra_js %}
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.13.0/jquery-ui.min.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <h4 class="card-title mb-3 text-center">الكميات المطلوبة</h4>
+
+  <h5 class="mt-5">الكتب المطلوبة</h5>
+  <div class="table-responsive">
+    <table class="table table-bordered table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">المرحلة</th>
+                <th scope="col">الصف</th>
+                <th scope="col">الكتاب</th>
+                <th scope="col">المطلوب (نسخة)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for book in required_books %}
+                {% if book.required_quantity > 0 %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ book.stage }}</td>
+                        <td>{{ book.class_level }}</td>
+                        <td>{{ book.title }}</td>
+                        <td>{{ book.required_quantity }}</td>
+                    </tr>
+                {% endif %}
+            {% empty %}
+                <tr>
+                    <td colspan="5">لا توجد نتائج.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+  </div>
+
+
+
+  <h5 class="mt-5">البوكليتات المطلوبة</h5>
+  <div class="table-responsive">
+    <table class="table table-bordered table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">المرحلة</th>
+                <th scope="col">الصف</th>
+                <th scope="col">البوكليت</th>
+                <th scope="col">المطلوب (نسخة)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for booklet in required_booklets %}
+                {% if booklet.required_quantity > 0 %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ booklet.stage }}</td>
+                        <td>{{ booklet.class_level }}</td>
+                        <td>{{ booklet.title }}</td>
+                        <td>{{ booklet.required_quantity }}</td>
+                    </tr>
+                {% endif %}
+            {% empty %}
+                <tr>
+                    <td colspan="5">لا توجد نتائج.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

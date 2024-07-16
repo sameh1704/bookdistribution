@@ -44,15 +44,25 @@
                     </div>
                 </div>
             </div>
-
+            <div class="card card-5">
+                <div class="card-body text-center">
+                    <div class="content">
+                        <a href="{% url 'store:notebook_request' %}" class="d-block">
+                            <img src="{% static 'dist-assets/images/products/322.png' %}" alt="تسجيل اهلاك الكتب" class="icon-img">
+                            <h3 class="mt-4 mb-2">  حساب طلبيات الكراسات</h3>
+                            <p class="text-muted">   طلب الكراسات</p>
+                        </a>
+                    </div>
+                </div>
+            </div>
             <!-- Home -->
             <div class="card card-4">
                 <div class="card-body text-center">
                     <div class="content">
-                        <a href="{% url 'store:home' %}" class="d-block">
-                            <img src="{% static 'dist-assets/images/products/s44.png' %}" alt="الرئيسية" class="icon-img">
-                            <h3 class="mt-4 mb-2">الرئيسية</h3>
-                            <p class="text-muted">العودة إلى الصفحة الرئيسية</p>
+                        <a href="{% url 'store:required_resources' %}" class="d-block">
+                            <img src="{% static 'dist-assets/images/products/s44.png' %}" alt="[حساب الطلبيات]" class="icon-img">
+                            <h3 class="mt-4 mb-2">الطلبيات </h3>
+                            <p class="text-muted">   حساب الطلبيات</p>
                         </a>
                     </div>
                 </div>
@@ -125,6 +135,7 @@
     .card-2 { background: linear-gradient(135deg, #4ECDC4, #45B7D1); color: white; }
     .card-3 { background: linear-gradient(135deg, #FF8C42, #FDB87D); color: #333; }
     .card-4 { background: linear-gradient(135deg, #6A0572, #AB83A1); color: white; }
+    .card-5 { background: linear-gradient(135deg, #1A936F, #88D498); color: white; }
     .card .text-muted {
         color: rgba(255, 255, 255, 0.8) !important;
     }

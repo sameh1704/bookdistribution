@@ -104,8 +104,11 @@ urlpatterns = [
 
     #path('stock-report/', views.stock_report_view, name='stock_report'),
     #path('load-class-levels/', views.load_class_levels, name='load_class_levels'),
-    #path('generate-report/', views.generate_report, name='generate_report'),
+    #path('generate-report/', views.generate_report, name='generate_report'),   
   
+   path('required_resources/', required_resources_view, name='required_resources'),
+   path('notebook_request/', views.notebook_request_view, name='notebook_request'),
+   path('ajax/load_class_levels/', views.load_class_levels, name='load_class_levels'),
 
 
 

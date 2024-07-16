@@ -10,7 +10,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 import sys
-
 import os
 from pathlib import Path
 
@@ -34,7 +33,6 @@ SECRET_KEY = 'django-insecure-l1#r87u)$bowma&8s_s#^u*vcswdb!1n&8*h)5&s3ft4-df)_b
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -52,12 +50,10 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': True,
         },
-    },
+    },    
 }
 
-
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -69,11 +65,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'store',
+    'accounts',
     'django_filters',
     'widget_tweaks',
     "rest_framework"
-    
-
 ]
 
 MIDDLEWARE = [
@@ -85,7 +80,11 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-
+LOGIN_REDIRECT_URL = 'store:home'
+AUTH_USER_MODEL = 'accounts.CustomUser'
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'store:home'  # أو أي صفحة افتراضية أخرى
+LOGOUT_REDIRECT_URL = 'login'
 ROOT_URLCONF = 'project.urls'
 
 TEMPLATES = [
@@ -106,6 +105,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'project.wsgi.application'
 
+# إضافة هذا السطر لتحديد نموذج المستخدم المخصص
+AUTH_USER_MODEL = 'accounts.CustomUser'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
@@ -116,7 +117,6 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -135,7 +135,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
@@ -159,7 +158,6 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'static_root')
 
-
 # Media files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -168,3 +166,4 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+

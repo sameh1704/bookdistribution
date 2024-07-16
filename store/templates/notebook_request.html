@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid">
+    <h4 class="card-title mb-3 text-center">طلب كراسات</h4>
+    <form method="post" class="mb-3">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="id_stage">المرحلة:</label>
+          {{ form.stage }}
+        </div>
+        <div class="form-group col-md-6">
+          <label for="id_class_levels">الصفوف:</label>
+          <div id="id_class_levels">
+            {{ form.class_levels }}
+          </div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="id_notebook_type">نوع الكراسة:</label>
+          {{ form.notebook_type}}
+        </div>
+        <div class="form-group col-md-6">
+          <label for="id_quantity_per_student">الكمية لكل طالب:</label>
+          {{ form.quantity_per_student }}
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary">احسب الكمية المطلوبة</button>
+    </form>
+  
+    {% if results %}
+      <h5 class="mt-5">النتائج</h5>
+      <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col">المرحلة</th>
+              <th scope="col">الصفوف</th>
+              <th scope="col">نوع الكراسة</th>
+              <th scope="col">الكمية المطلوبة (نسخة)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for result in results %}
+              <tr>
+                <td>{{ result.stage }}</td>
+                <td>{{ result.class_levels }}</td>
+                <td>{{ result.notebook_type }}</td>
+                <td>{{ result.required_quantity }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% endif %}
+  </div>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+  $(document).ready(function () {
+      $('#id_stage').change(function () {
+          var stageId = $(this).val();
+          $.ajax({
+              url: '{% url "store:load_class_levels" %}',
+              data: {
+                  'stage_id': stageId
+              },
+              dataType: 'json',
+              success: function (data) {
+                  var classLevelsContainer = $('#id_class_levels');
+                  classLevelsContainer.empty();
+                  $.each(data, function (index, item) {
+                      classLevelsContainer.append(
+                          '<div class="form-check">' +
+                          '<input class="form-check-input" type="checkbox" name="class_levels" value="' + item.id + '" id="class_level_' + item.id + '">' +
+                          '<label class="form-check-label" for="class_level_' + item.id + '">' + item.name + '</label>' +
+                          '</div>'
+                      );
+                  });
+              }
+          });
+      });
+  });
+  </script>
+{% endblock %}

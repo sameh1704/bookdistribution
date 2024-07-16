@@ -1,0 +1,88 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - مدارس المنار الخاصة للغات</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('{% static "background_image1.jpg" %}'); /* استبدل "background_image.jpg" بمسار صورة الخلفية الخاصة بك */
+            background-size: cover;
+            background-position: center;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .login-container {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .login-container img {
+            width: 120px;
+            margin-bottom: 10px;
+        }
+
+        .login-container h2 {
+            margin: 0;
+            font-size: 18px;
+            color: #333;
+        }
+
+        .login-form input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box; /* لضمان عدم تجاوز حجم المدخلات الإجمالي */
+        }
+
+        .login-form button {
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .login-form button:hover {
+            background-color: #45a049;
+        }
+
+        .create-account-btn {
+            margin-top: 15px;
+            color: #4CAF50;
+            text-decoration: none;
+        }
+
+        .create-account-btn:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <img src="{% static 'logo1.png' %}" alt="Logo">
+        <h2>مرحباً في إدارة مخزن الكتب المدرسية لمدارس المنار الخاصة للغات</h2>
+        <form class="login-form" method="post">
+            {% csrf_token %}
+            <input type="text" name="username" placeholder="اسم المستخدم أو البريد الإلكتروني">
+            <input type="password" name="password" placeholder="كلمة المرور">
+            <button type="submit">تسجيل الدخول</button>
+        </form>
+    </div>
+</body>
+</html>
